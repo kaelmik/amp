@@ -15,49 +15,13 @@ the Free Software Foundation; either version 2 of the License, or
 -----------------------------------------------------------------------------"""
 
 import ablib, serial, smbus, time
+from amp import *
 
-#Define which i2c_bus device driver to use
-#(normally /dev/i2c-0) 
-bus = smbus.SMBus(0)
-
-#Define serial port
-ser=serial.Serial('/dev/ttyS1')
-ser.timeout=1
-
-
-#Define I2C address 
-POWER_IO = 0x38
-SELECT_IO = 0x39
-CS8416 = 0x10
-WM8742 = 0x1A
+#GPIO init
+gpio_init()
 
 #Init LCD
-lcd_reset=ablib.Pin('J7','35','low')
-lcd_reset.on()
-
-#Fonctions I2C
-def i2c_write(device, register, value):
-  bus.write_byte_data(device,register,value)
-
-
-
-#Inputs init
-i2c_write(SELECT_IO, 0x03, 0x00)
-i2c_write(SELECT_IO, 0x01, 0x01)
-i2c_write(POWER_IO, 0x03, 0x00)
-i2c_write(POWER_IO, 0x01, 0x10)
-i2c_write(POWER_IO, 0x01, 0x13)
-
-#wait for screen to boot up
-time.sleep(5)
-#set analog 1 input button
-ser.write('\x01\x06\x0e\x00\x01\x08')
-time.sleep(2)
-s=ser.read(1) #read ACK
-if s == '\x06' :
-  print "ACK OK"
-time.sleep(2)
-
+lcd_init()
 
 #Fonctions Serial
 while(1):
