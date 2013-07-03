@@ -10,7 +10,7 @@ Description		: Preamplifier library and define
 -----------------------------------------------------------------------------"""
 import ablib, serial, smbus, time, pca9554
 
-#Define I2C address on PB1007A Board
+#Define peripheral I2C address on PB1007A Board
 POWER_IO = 0x38
 SELECT_IO = 0x39
 CS8416 = 0x10
@@ -30,11 +30,11 @@ def i2c_write(device, register, value):
 #GPIO Init function
 def gpio_init():
   """Set GPIO with Analog 1 input selected"""
-  i2c_write(SELECT_IO, 0x03, 0x00)
-  i2c_write(SELECT_IO, 0x01, 0x01)
-  i2c_write(POWER_IO, 0x03, 0x00)
-  i2c_write(POWER_IO, 0x01, 0x10)
-  i2c_write(POWER_IO, 0x01, 0x13) 
+  i2c_write(SELECT_IO, pca9554.DIR_REG, 0x00)
+  i2c_write(SELECT_IO, pca9554.OUT_REG, 0x01)
+  i2c_write(POWER_IO, pca9554.DIR_REG, 0x00)
+  i2c_write(POWER_IO, pca9554.OUT_REG, 0x10)
+  i2c_write(POWER_IO, pca9554.OUT_REG, 0x13) 
 
 #LCD Startup init  
 def lcd_init():
