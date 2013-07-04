@@ -18,12 +18,13 @@ CS8416 = 0x10
 WM8742 = 0x1A
 
 #Define Selector map
-MUTE_MASK = 0xC0
+UNMUTE_MASK = 0xC0
+MUTE_MASK = 0x3F
 SEL_MASK = 0x3F
 SEL_ANALOG_1 = 0x01
 SEL_ANALOG_2 = 0x09
-SEL_SPDIF = 0x22
-SEL_TOSLINK = 0x12
+SEL_SPDIF = 0x12
+SEL_TOSLINK = 0x22
 SEL_DLNA = 0x04
 
 #Open serial port instance for LCD
@@ -62,15 +63,17 @@ def set_audio_input(input):
 	else:
 		i2c_write(CS8416, 0x04, 0x00)
 		i2c_write(CS8416, 0x05, 0x00)
-	bus.write_byte_data(SELECT_IO, pca9554.OUT_REG, (SEL_MASK | input)
+	bus.write_byte_data(SELECT_IO, pca9554.OUT_REG, (SEL_MASK & input))
 
 #Mute HP Output
 def mute_hp():
-	bus.write_byte_data(SELECT_IO, pca9554.OUT_REG, (MUTE_MASK | 0xFF)
+	old_val = bus.read_byte_data(SELECT_IO, pca9554.OUT_REG)
+	bus.write_byte_data(SELECT_IO, pca9554.OUT_REG, (MUTE_MASK & old_val))
  
 #Unmute HP Output
 def unmute_hp():
-	bus.write_byte_data(SELECT_IO, pca9554.OUT_REG, (MUTE_MASK | 0x00)
+	old_val = bus.read_byte_data(SELECT_IO, pca9554.OUT_REG)
+	bus.write_byte_data(SELECT_IO, pca9554.OUT_REG, (UNMUTE_MASK | old_val))
   
 #GPIO Init function
 def gpio_init():
