@@ -48,6 +48,12 @@ lcd_button_get = {
 	"PowerOn"  : '\x07\x06\x03\x00\x00\x02',
 }
 
+lcd_button_set = {
+	"Analog_1" : '\x01\x06\x0e\x00\x01\x08',
+}
+
+lcd_ack = '\x06'
+
 #I2C write
 def i2c_write(device, register, value):
 	bus.write_byte_data(device, register, value)
@@ -92,10 +98,9 @@ def lcd_init():
 	"""Initialize LCD at system boot"""
 	lcd_power.on() #Release lcd reset pin
 	time.sleep(5) #Wait for screen to boot up
-	ser.write('\x01\x06\x0e\x00\x01\x08')#set analog 1 input button
+	ser.write(lcd_button_set["Analog_1"])#set analog 1 input button
 	time.sleep(2)
-	s=ser.read(1) #read ACK from screen
-	if s == '\x06' :
+	if ser.read(1) == lcd_ack: #read ACK from screen
 		print "ACK OK"
 	else:
 		print "ACK error"
