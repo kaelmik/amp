@@ -56,9 +56,12 @@ def set_audio_input(input):
 	if input == SEL_SPDIF:
 		i2c_write(CS8416, 0x04, 0x80)
 		i2c_write(CS8416, 0x05, 0x80)
-	if input == SEL_TOSLINK:
+	elif input == SEL_TOSLINK:
 		i2c_write(CS8416, 0x04, 0x89)
 		i2c_write(CS8416, 0x05, 0x80)
+	else
+		i2c_write(CS8416, 0x04, 0x00)
+		i2c_write(CS8416, 0x05, 0x00)
 	bus.write_byte_data(SELECT_IO, pca9554.OUT_REG, (SEL_MASK | input)
 
 #Mute HP Output
