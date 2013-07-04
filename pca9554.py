@@ -1,13 +1,13 @@
 #!/usr/bin/python
-"""-----------------------------------------------------------------------------
-Author			: akael
-Creation date 	: 01.07.2013
-Project			: PB1007A Preamplifier Rev.1
-Langage			: Python
-Filename		: pca9554.py
-Target		 	: PB1001A AT91SAM9G20 Linux Kernel 2.6.38
-Description		: PCA9554A GPIO Expander
------------------------------------------------------------------------------"""
+################################################################################
+# Author			: akael
+# Creation date 	: 01.07.2013
+# Project			: PB1007A Preamplifier Rev.1
+# Langage			: Python
+# Filename			: pca9554.py
+# Target		 	: PB1001A AT91SAM9G20 Linux Kernel 2.6.38
+# Description		: PCA9554A GPIO Expander
+################################################################################
 
 #Define register
 IN_REG = 0x00 #Input register
