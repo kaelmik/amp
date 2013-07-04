@@ -46,10 +46,20 @@ lcd_button_get = {
 	"DLNA"     : '\x07\x06\x0d\x00\x01\x0d',
 	"Standby"  : '\x07\x06\x03\x00\x01\x03',
 	"PowerOn"  : '\x07\x06\x03\x00\x00\x02',
+	"MuteOn"   : '\x07\x06\x08\x00\x01\x08',
+	"MuteOff"  : '\x07\x06\x08\x00\x00\x09',
 }
 
 lcd_button_set = {
 	"Analog_1" : '\x01\x06\x0e\x00\x01\x08',
+}
+
+lcd_form_set = {
+	"Form0"    : '\x01\x0a\x00\x00\x00\x0b',
+	"Form1"    : '\x01\x0a\x01\x00\x00\x0a',
+	"Form2"    : '\x01\x0a\x02\x00\x00\x09',
+	"Form3"    : '\x01\x0a\x03\x00\x00\x08',
+	"Form4"    : '\x01\x0a\x04\x00\x00\x0f',
 }
 
 lcd_ack = '\x06'
@@ -101,10 +111,15 @@ def lcd_init():
 	ser.write(lcd_button_set["Analog_1"])#set analog 1 input button
 	time.sleep(2)
 	if ser.read(1) == lcd_ack: #read ACK from screen
-		print "ACK OK"
+		print "Analog 1 set"
 	else:
-		print "ACK error"
+		print "Analog 1 set error"
 	time.sleep(2)
+	ser.write(lcd_form_set["Form1"])
+	if ser.read(1) == lcd_ack:
+		print "Form 1 set"
+	else:
+		print "Form 1 set error"
 
 #Read serial port for data from LCD
 def serial_read():
@@ -134,4 +149,10 @@ def serial_read():
 		i2c_write(POWER_IO, 0x01, 0x10)
 		time.sleep(0.5)
 		i2c_write(POWER_IO, 0x01, 0x13)
+		unmute_hp()
+	if s ==  lcd_button_get['MuteOn']:
+		print "Mute ON"
+		mute_hp()
+	if s ==  lcd_button_get['MuteOff']:
+		print "Mute OFF"
 		unmute_hp()
