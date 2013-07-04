@@ -4,7 +4,7 @@
 # Creation date 	: 01.07.2013
 # Project			: PB1007A Preamplifier Rev.1
 # Langage			: Python
-# Filename		: main.py
+# Filename			: main.py
 # Target		 	: PB1001A AT91SAM9G20 Linux Kernel 2.6.38
 # Description		: PB1007A firmware v1.0
 #

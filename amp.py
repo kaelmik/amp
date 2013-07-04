@@ -4,7 +4,7 @@
 # Creation date 	: 01.07.2013
 # Project			: PB1007A Preamplifier Rev.1
 # Langage			: Python
-# Filename		: amp.py
+# Filename			: amp.py
 # Target		 	: PB1001A AT91SAM9G20 Linux Kernel 2.6.38
 # Description		: Preamplifier library and define
 ################################################################################
@@ -118,9 +118,12 @@ def serial_read():
 		set_audio_input(SEL_DLNA)
 	if s ==  lcd_button_get['Standby']:
 		print "Standby"
+		mute_hp()
 		i2c_write(POWER_IO, 0x01, 0x1C)
 	if s ==  lcd_button_get['PowerOn']:
 		print "Power ON"
+		mute_hp()
 		i2c_write(POWER_IO, 0x01, 0x10)
 		time.sleep(0.5)
 		i2c_write(POWER_IO, 0x01, 0x13)
+		unmute_hp()
