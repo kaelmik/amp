@@ -40,7 +40,7 @@ class Pca9554():
 			self.setoutput()
 		return
 
-	def setdir_reg(self, value):
+	def set_dir_reg(self, value):
 		"""set direction register : 0=output, 1=input"""
 		self.i2c_bus.write_byte_data(self.i2c_address, DIR_REG, value)
 		return

@@ -37,6 +37,25 @@ lcd_power=ablib.Pin('J7','35','low') #open an instance for lcd reset pin (Kernel
 #Open i2c_bus instance (/dev/i2c-0 on PB1007A) 
 bus = smbus.SMBus(0)
 
+#PCA9554 Selector Instances
+selector = pca9554.Pca9554(bus_id=0, address=SELECT_IO)
+ana_en = pca9554.Pca9554(bus_id=0, address=SELECT_IO, line=0)
+dig_en = pca9554.Pca9554(bus_id=0, address=SELECT_IO, line=1)
+dlna_en = pca9554.Pca9554(bus_id=0, address=SELECT_IO, line=2)
+rca_sel = pca9554.Pca9554(bus_id=0, address=SELECT_IO, line=3)
+toslink_en = pca9554.Pca9554(bus_id=0, address=SELECT_IO, line=4)
+spdif_en = pca9554.Pca9554(bus_id=0, address=SELECT_IO, line=5)
+spk_l_en = pca9554.Pca9554(bus_id=0, address=SELECT_IO, line=6)
+spk_r_en = pca9554.Pca9554(bus_id=0, address=SELECT_IO, line=7)
+
+#PCA9554 Power Instances
+power = pca9554.Pca9554(bus_id=0, address=POWER_IO)
+amp_r = pca9554.Pca9554(bus_id=0, address=POWER_IO, line=0)
+amp_l = pca9554.Pca9554(bus_id=0, address=POWER_IO, line=0)
+p12va = pca9554.Pca9554(bus_id=0, address=POWER_IO, line=2)
+m12va = pca9554.Pca9554(bus_id=0, address=POWER_IO, line=3)
+dvdd = pca9554.Pca9554(bus_id=0, address=POWER_IO, line=4)
+
 #LCD Serial message
 lcd_button_get = {
 	"Analog_1" : '\x07\x06\x0e\x00\x01\x0e',
@@ -79,28 +98,30 @@ def set_audio_input(input):
 	else:
 		i2c_write(CS8416, 0x04, 0x00)
 		i2c_write(CS8416, 0x05, 0x00)
-	bus.write_byte_data(SELECT_IO, pca9554.OUT_REG, (SEL_MASK & input))
+	selector.writebyte(input)
+	return
 
 #Mute HP Output
 def mute_hp():
-	old_val = bus.read_byte_data(SELECT_IO, pca9554.OUT_REG)
-	bus.write_byte_data(SELECT_IO, pca9554.OUT_REG, (MUTE_MASK & old_val))
- 
+	spk_l_en.reset()
+	spk_r_en.reset()
+	return
+	
 #Unmute HP Output
 def unmute_hp():
-	old_val = bus.read_byte_data(SELECT_IO, pca9554.OUT_REG)
-	bus.write_byte_data(SELECT_IO, pca9554.OUT_REG, (UNMUTE_MASK | old_val))
+	spk_l_en.set()
+	spk_r_en.set()
+	return
   
 #GPIO Init function
 def gpio_init():
 	"""Set GPIO with Analog 1 input selected"""
 	mute_hp()
-	i2c_write(SELECT_IO, pca9554.DIR_REG, 0x00)
-	i2c_write(SELECT_IO, pca9554.POL_REG, 0x30)
+	selector.set_dir_reg(0x00)
 	set_audio_input(SEL_ANALOG_1)
-	i2c_write(POWER_IO, pca9554.DIR_REG, 0x00)
-	i2c_write(POWER_IO, pca9554.OUT_REG, 0x10)
-	i2c_write(POWER_IO, pca9554.OUT_REG, 0x13)
+	power.set_dir_reg(0x00)
+	power.writebyte(0x10)
+	power.writebyte(0x13)
 	unmute_hp()  
 
 #LCD Startup init  
@@ -142,13 +163,13 @@ def serial_read():
 	if s ==  lcd_button_get['Standby']:
 		print "Standby"
 		mute_hp()
-		i2c_write(POWER_IO, 0x01, 0x1C)
+		power.writebyte(0x1C)
 	if s ==  lcd_button_get['PowerOn']:
 		print "Power ON"
 		mute_hp()
-		i2c_write(POWER_IO, 0x01, 0x10)
+		power.writebyte(0x10)
 		time.sleep(0.5)
-		i2c_write(POWER_IO, 0x01, 0x13)
+		power.writebyte(0x13)
 		unmute_hp()
 	if s ==  lcd_button_get['MuteOn']:
 		print "Mute ON"
