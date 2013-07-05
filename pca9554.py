@@ -30,7 +30,7 @@ class Pca9554():
 	i2c_address=-1
 	line=-1
 
-	def __init__(self, bus_id=0,address=0x39,line=0, direction=1):
+	def __init__(self, bus_id=0,address=0x39,line=0, direction="Null"):
 		self.i2c_bus = smbus.SMBus(bus_id)
 		self.i2c_address=address
 		self.line=line
