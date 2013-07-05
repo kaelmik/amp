@@ -46,32 +46,37 @@ class Pca9554():
 		return
 	
 	def setinput(self):
-		"""set direction bit : 0=output, 1=input"""
+		"""set bit as input"""
 		currentvalue = self.i2c_bus.read_byte_data(self.i2c_address, DIR_REG, value)
 		self.i2c_bus.write_byte_data(self.i2c_address, DIR_REG, currentvalue | 1<<self.line)
 		
 	def setoutput(self):
-		"""set direction bit : 0=output, 1=input"""
+		"""set bit as output"""
 		currentvalue = self.i2c_bus.read_byte_data(self.i2c_address, DIR_REG, value)
 		self.i2c_bus.write_byte_data(self.i2c_address, DIR_REG, currentvalue & (255-(1<<self.line)))	
 		
 	def writebyte(self,value):
+		"""write output byte value"""
 		self.i2c_bus.write_byte_data(self.i2c_address, OUT_REG, value)	
 		return
 
 	def readbyte(self):
+		"""read input byte value"""
 		return self.i2c_bus.read_byte_data(self.i2c_address, IN_REG)
 
 	def set(self):
+		"""set output bit at 1"""
 		currentvalue = self.i2c_bus.read_byte_data(self.i2c_address, OUT_REG)
 		self.i2c_bus.write_byte_data(self.i2c_address, OUT_REG, currentvalue | 1<<self.line)	
 		return
 
 	def reset(self):
+		"""reset output bit at 0"""
 		currentvalue = self.i2c_bus.read_byte_data(self.i2c_address, OUT_REG)
 		self.i2c_bus.write_byte_data(self.i2c_address, OUT_REG, currentvalue & (255-(1<<self.line)))	
 		return
 
-	def get(self):	
+	def get(self):
+		"""read input bit value"""
 		linevalue = self.i2c_bus.read_byte_data(self.i2c_address, IN_REG)
 		return linevalue >> self.line
