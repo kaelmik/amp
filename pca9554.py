@@ -79,4 +79,5 @@ class Pca9554():
 	def get(self):
 		"""read input bit value"""
 		linevalue = self.i2c_bus.read_byte_data(self.i2c_address, IN_REG)
-		return linevalue >> self.line
+		ret=linevalue >> self.line
+		return ret &= 1
