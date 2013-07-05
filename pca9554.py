@@ -9,8 +9,69 @@
 # Description		: PCA9554A GPIO Expander
 ################################################################################
 
-#Define register
-IN_REG = 0x00 #Input register
-OUT_REG = 0x01 #Output register
-POL_REG = 0x02 #Polarity inversion register (1=data inverted)
-DIR_REG = 0x03 #Config register (0=output, 1=input)
+import smbus
+
+class Pca9554():
+
+	"""
+	Pca9554 (8 bit I2C expander)
+	"""
+
+	#Define register
+	IN_REG = 0x00 #Input register
+	OUT_REG = 0x01 #Output register
+	POL_REG = 0x02 #Polarity inversion register (1=data inverted)
+	DIR_REG = 0x03 #Config register (0=output, 1=input)
+	
+	IN = 1
+	OUT = 0
+
+	i2c_bus=-1
+	i2c_address=-1
+	line=-1
+
+	def __init__(self, bus_id=0,address=0x39,line=0, direction=1):
+		self.i2c_bus = smbus.SMBus(bus_id)
+		self.i2c_address=address
+		self.line=line
+		if direction == IN:
+			self.setinput()
+		if direction == OUT:
+			self.setoutput()
+		return
+
+	def setdir_reg(self, value):
+		"""set direction register : 0=output, 1=input"""
+		self.i2c_bus.write_byte_data(self.i2c_address, DIR_REG, value)
+		return
+	
+	def setinput(self):
+		"""set direction bit : 0=output, 1=input"""
+		currentvalue = self.i2c_bus.read_byte_data(self.i2c_address, DIR_REG, value)
+		self.i2c_bus.write_byte_data(self.i2c_address, DIR_REG, currentvalue | 1<<self.line)
+		
+	def setoutput(self):
+		"""set direction bit : 0=output, 1=input"""
+		currentvalue = self.i2c_bus.read_byte_data(self.i2c_address, DIR_REG, value)
+		self.i2c_bus.write_byte_data(self.i2c_address, DIR_REG, currentvalue & (255-(1<<self.line)))	
+		
+	def writebyte(self,value):
+		self.i2c_bus.write_byte_data(self.i2c_address, OUT_REG, value)	
+		return
+
+	def readbyte(self):
+		return self.i2c_bus.read_byte_data(self.i2c_address, IN_REG)
+
+	def set(self):
+		currentvalue = self.i2c_bus.read_byte_data(self.i2c_address, OUT_REG)
+		self.i2c_bus.write_byte_data(self.i2c_address, OUT_REG, currentvalue | 1<<self.line)	
+		return
+
+	def reset(self):
+		currentvalue = self.i2c_bus.read_byte_data(self.i2c_address, OUT_REG)
+		self.i2c_bus.write_byte_data(self.i2c_address, OUT_REG, currentvalue & (255-(1<<self.line)))	
+		return
+
+	def get(self):	
+		linevalue = self.i2c_bus.read_byte_data(self.i2c_address, IN_REG)
+		return linevalue >> self.line
