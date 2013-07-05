@@ -137,6 +137,7 @@ def lcd_init():
 		print "Analog 1 set error"
 	time.sleep(2)
 	ser.write(lcd_form_set["Form1"])
+	time.sleep(1)
 	if ser.read(1) == lcd_ack:
 		print "Form 1 set"
 	else:
