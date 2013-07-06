@@ -17,11 +17,14 @@
 import ablib, serial, smbus, time
 from amp import *
 
+#Init LCD
+lcd_init()
+
 #GPIO init
 gpio_init()
 
-#Init LCD
-lcd_init()
+#Set Form1
+set_form("Form1")
 
 #Fonctions Serial
 while(1):

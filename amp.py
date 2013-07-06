@@ -18,8 +18,7 @@ CS8416 = 0x10
 WM8742 = 0x1A
 
 #Define Selector map
-UNMUTE_MASK = 0xC0
-MUTE_MASK = 0x3F
+MUTE_MASK = 0xC0
 SEL_MASK = 0x3F
 SEL_ANALOG_1 = 0x01
 SEL_ANALOG_2 = 0x09
@@ -71,6 +70,8 @@ lcd_button_get = {
 
 lcd_button_set = {
 	"Analog_1" : '\x01\x06\x0e\x00\x01\x08',
+	"MuteOn"   : '\x01\x06\x08\x00\x01\x0e',
+	"MuteOff"  : '\x01\x06\x08\x00\x00\x0f',
 }
 
 lcd_form_set = {
@@ -98,19 +99,33 @@ def set_audio_input(input):
 	else:
 		i2c_write(CS8416, 0x04, 0x00)
 		i2c_write(CS8416, 0x05, 0x00)
-	selector.writebyte(input)
+	oldvalue = selector.readbyte()
+	mute_state = oldvalue & MUTE_MASK
+	selector.writebyte(input | mute_state)
 	return
 
-#Mute HP Output
+#Unmute HP Output
 def mute_hp():
 	spk_l_en.reset()
 	spk_r_en.reset()
+#	ser.write(lcd_button_set["MuteOn"])
+#	time.sleep(1)
+#	if ser.read(1) == lcd_ack: #read ACK from screen
+#		print "Mute OK"
+#	else:
+#		print "Mute failed"
 	return
 	
-#Unmute HP Output
+#Mute HP Output
 def unmute_hp():
 	spk_l_en.set()
 	spk_r_en.set()
+#	ser.write(lcd_button_set["MuteOff"])
+#	time.sleep(1)
+#	if ser.read(1) == lcd_ack: #read ACK from screen
+#		print "Unmute OK"
+#	else:
+#		print "Unmute failed"
 	return
   
 #GPIO Init function
@@ -122,7 +137,7 @@ def gpio_init():
 	power.set_dir_reg(0x00)
 	power.writebyte(0x10)
 	power.writebyte(0x13)
-	unmute_hp()  
+	unmute_hp()
 
 #LCD Startup init  
 def lcd_init():
@@ -130,18 +145,20 @@ def lcd_init():
 	lcd_power.on() #Release lcd reset pin
 	time.sleep(5) #Wait for screen to boot up
 	ser.write(lcd_button_set["Analog_1"])#set analog 1 input button
-	time.sleep(2)
+	time.sleep(1)
 	if ser.read(1) == lcd_ack: #read ACK from screen
 		print "Analog 1 set"
 	else:
 		print "Analog 1 set error"
-	time.sleep(2)
-	ser.write(lcd_form_set["Form1"])
 	time.sleep(1)
+	
+def set_form(form):
+	ser.write(lcd_form_set[form])
+	time.sleep(0.5)
 	if ser.read(1) == lcd_ack:
-		print "Form 1 set"
+		print ("{0} set".format(form))
 	else:
-		print "Form 1 set error"
+		print ("{0} set error".format(form))
 
 #Read serial port for data from LCD
 def serial_read():
