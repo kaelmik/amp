@@ -108,24 +108,12 @@ def set_audio_input(input):
 def mute_hp():
 	spk_l_en.reset()
 	spk_r_en.reset()
-#	ser.write(lcd_button_set["MuteOn"])
-#	time.sleep(1)
-#	if ser.read(1) == lcd_ack: #read ACK from screen
-#		print "Mute OK"
-#	else:
-#		print "Mute failed"
 	return
 	
 #Mute HP Output
 def unmute_hp():
 	spk_l_en.set()
 	spk_r_en.set()
-#	ser.write(lcd_button_set["MuteOff"])
-#	time.sleep(1)
-#	if ser.read(1) == lcd_ack: #read ACK from screen
-#		print "Unmute OK"
-#	else:
-#		print "Unmute failed"
 	return
   
 #GPIO Init function
