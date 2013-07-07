@@ -29,4 +29,4 @@ set_form("Form1")
 #Fonctions Serial
 while(1):
   serial_read()
-  time.sleep(0.5)
+  time.sleep(0.2)

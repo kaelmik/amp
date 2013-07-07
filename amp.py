@@ -151,6 +151,7 @@ def set_form(form):
 #Read serial port for data from LCD
 def serial_read():
 	s = ser.read(6)
+	global selector_cache #variable to store selector state
 	if s ==  lcd_button_get['Analog_1']:
 		print "Analog 1"
 		set_audio_input(SEL_ANALOG_1)
@@ -168,15 +169,16 @@ def serial_read():
 		set_audio_input(SEL_DLNA)
 	if s ==  lcd_button_get['Standby']:
 		print "Standby"
+		selector_cache = selector.readbyte()
 		mute_hp()
 		power.writebyte(0x1C)
 	if s ==  lcd_button_get['PowerOn']:
 		print "Power ON"
 		mute_hp()
 		power.writebyte(0x10)
-		time.sleep(0.5)
+		time.sleep(1)
 		power.writebyte(0x13)
-		unmute_hp()
+		selector.writebyte(selector_cache)
 	if s ==  lcd_button_get['MuteOn']:
 		print "Mute ON"
 		mute_hp()
