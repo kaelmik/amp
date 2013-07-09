@@ -26,7 +26,15 @@ gpio_init()
 #Set Form1
 set_form("Form1")
 
+#Set time
+set_time()
+t=0
+
 #Fonctions Serial
 while(1):
-  serial_read()
-  time.sleep(0.2)
+	t = t + 1
+	serial_read()
+	time.sleep(0.2)
+	if t == 10 :
+		set_time()
+		t = 0

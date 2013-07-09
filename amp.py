@@ -9,7 +9,8 @@
 # Description		: Preamplifier library and define
 ################################################################################
 
-import ablib, serial, smbus, time, pca9554
+import ablib, serial, smbus, time, pca9554, datetime
+from operator import xor
 
 #Define peripheral I2C address on PB1007A Board
 POWER_IO = 0x38
@@ -139,6 +140,22 @@ def lcd_init():
 	else:
 		print "Analog 1 set error"
 	time.sleep(1)
+	
+#Update current time on LCD Screen
+def set_time():
+	now = datetime.datetime.now()
+	time = now.strftime("%H:%M")
+	xo = map(ord, time)
+	xo.append(2)
+	xo.append(1)
+	xo.append(5)
+	checksum = reduce(xor, xo)
+	ser.write("\x02\x01\x05{0}{1}".format(time, chr(checksum)))
+	if ser.read(1) == lcd_ack: #read ACK from screen
+		print ("set_time({0})".format(time))
+	else:
+		print "Time set error"
+
 	
 def set_form(form):
 	ser.write(lcd_form_set[form])
