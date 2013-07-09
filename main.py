@@ -35,6 +35,6 @@ while(1):
 	t = t + 1
 	serial_read()
 	time.sleep(0.2)
-	if t == 10 :
+	if t == 15 :
 		set_time()
 		t = 0

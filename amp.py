@@ -152,9 +152,9 @@ def set_time():
 	checksum = reduce(xor, xo)
 	ser.write("\x02\x01\x05{0}{1}".format(time, chr(checksum)))
 	if ser.read(1) == lcd_ack: #read ACK from screen
-		print ("set_time({0})".format(time))
+#		print ("set_time({0})".format(time))
 	else:
-		print "Time set error"
+		print "set_time() error"
 
 	
 def set_form(form):
