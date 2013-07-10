@@ -145,12 +145,10 @@ def lcd_init():
 def set_time():
 	now = datetime.datetime.now()
 	time = now.strftime("%H:%M")
-	xo = map(ord, time)
-	xo.append(2)
-	xo.append(1)
-	xo.append(5)
-	checksum = reduce(xor, xo)
-	ser.write("\x02\x01\x05{0}{1}".format(time, chr(checksum)))
+	msg = [0x02, 0x01, 0x05]
+	msg += map(ord, time)
+	checksum = reduce(xor, msg)
+	ser.write("{0}{1}".format(map(chr,msg), chr(checksum)))
 	if ser.read(1) == lcd_ack: #read ACK from screen
 #		print ("set_time({0})".format(time))
 	else:
