@@ -148,9 +148,9 @@ def set_time():
 	msg = [0x02, 0x01, 0x05]
 	msg += map(ord, time)
 	checksum = reduce(xor, msg)
-	ser.write("{0}{1}".format(map(chr,msg), chr(checksum)))
+	ser.write("\x02\x01\x05{0}{1}".format(time, chr(checksum)))
 	if ser.read(1) == lcd_ack: #read ACK from screen
-#		print ("set_time({0})".format(time))
+		print ("set_time({0})".format(time))
 	else:
 		print "set_time() error"
 
