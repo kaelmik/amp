@@ -9,7 +9,7 @@
 # Description		: Preamplifier library and define
 ################################################################################
 
-import ablib, serial, smbus, time, pca9554, datetime
+import ablib, serial, smbus, time, pca9554, datetime, config
 from operator import xor
 
 #Define peripheral I2C address on PB1007A Board
@@ -73,6 +73,8 @@ lcd_button_set = {
 	"Analog_1" : '\x01\x06\x0e\x00\x01\x08',
 	"MuteOn"   : '\x01\x06\x08\x00\x01\x0e',
 	"MuteOff"  : '\x01\x06\x08\x00\x00\x0f',
+	"Standby"  : '\x01\x06\x03\x00\x01\x05',
+	"PowerOn"  : '\x01\x06\x03\x00\x00\x04',
 }
 
 lcd_form_set = {
@@ -81,6 +83,7 @@ lcd_form_set = {
 	"Form2"    : '\x01\x0a\x02\x00\x00\x09',
 	"Form3"    : '\x01\x0a\x03\x00\x00\x08',
 	"Form4"    : '\x01\x0a\x04\x00\x00\x0f',
+	"Form5"    : '\x01\x0a\x05\x00\x00\x0e',
 }
 
 lcd_ack = '\x06'
@@ -154,7 +157,7 @@ def set_time():
 	else:
 		print "set_time() error"
 
-	
+#Set LCD form function	
 def set_form(form):
 	ser.write(lcd_form_set[form])
 	time.sleep(0.5)
@@ -163,40 +166,62 @@ def set_form(form):
 	else:
 		print ("{0} set error".format(form))
 
+#Set LCD button function		
+def set_button(button):
+	ser.write(lcd_button_set[button])
+	time.sleep(0.5)
+	if ser.read(1) == lcd_ack:
+		print ("{0} button set".format(button))
+	else:
+		print ("{0} button set error".format(button))
+
+#Reset screen saver and auto-off counter		
+def reset_counter():
+	config.tick = 0
+	config.auto_off = 0
+
 #Read serial port for data from LCD
-def serial_read():
+def serial_read():		
 	s = ser.read(6)
-	global selector_cache #variable to store selector state
 	if s ==  lcd_button_get['Analog_1']:
 		print "Analog 1"
 		set_audio_input(SEL_ANALOG_1)
+		reset_counter()
 	if s == lcd_button_get['Analog_2']:
 		print "Analog 2"
 		set_audio_input(SEL_ANALOG_2)
+		reset_counter()
 	if s == lcd_button_get['SPDIF']:
 		print "SPDIF IN"
 		set_audio_input(SEL_SPDIF)
+		reset_counter()
 	if s == lcd_button_get['TOSLINK']:
 		print "Optical IN"
 		set_audio_input(SEL_TOSLINK)
+		reset_counter()
 	if s == lcd_button_get['DLNA']:
 		print "DLNA"
 		set_audio_input(SEL_DLNA)
+		reset_counter()
 	if s ==  lcd_button_get['Standby']:
 		print "Standby"
-		selector_cache = selector.readbyte()
+		config.selector_cache = selector.readbyte()
 		mute_hp()
 		power.writebyte(0x1C)
+		reset_counter()
 	if s ==  lcd_button_get['PowerOn']:
 		print "Power ON"
 		mute_hp()
 		power.writebyte(0x10)
 		time.sleep(1)
 		power.writebyte(0x13)
-		selector.writebyte(selector_cache)
+		selector.writebyte(config.selector_cache)
+		reset_counter()
 	if s ==  lcd_button_get['MuteOn']:
 		print "Mute ON"
 		mute_hp()
+		reset_counter()
 	if s ==  lcd_button_get['MuteOff']:
 		print "Mute OFF"
 		unmute_hp()
+		reset_counter()

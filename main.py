@@ -14,7 +14,7 @@
 # (at your option) any later version.
 ################################################################################
 
-import ablib, serial, smbus, time
+import ablib, serial, smbus, time, config
 from amp import *
 
 #Init LCD
@@ -28,13 +28,35 @@ set_form("Form1")
 
 #Set time
 set_time()
-t=0
+t = 0 
 
-#Fonctions Serial
+#Process main loop
 while(1):
+	#Increment counter
 	t = t + 1
+	config.auto_off += 1
+	config.tick += 1
+	
+	#Read serial port for input
 	serial_read()
 	time.sleep(0.2)
-	if t == 15 :
+	
+	#Set current time every ~15 seconds
+	if t == 15 : 
 		set_time()
 		t = 0
+		
+	#Check screen saver time
+	if config.tick == config.SCREEN_SAVER_TIME:
+		set_form("Form5")
+		config.tick = 0
+		
+	#Check auto power off time
+	if config.auto_off == config.AUTO_OFF_TIME:
+		print "Auto off time reached ... standby"
+		config.selector_cache = selector.readbyte()
+		mute_hp()
+		power.writebyte(0x1C)
+		ser.write(lcd_button_set["Standby"])
+		set_button("Standby")
+		selector.writebyte(config.selector_cache)
