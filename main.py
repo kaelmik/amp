@@ -57,6 +57,5 @@ while(1):
 		config.selector_cache = selector.readbyte()
 		mute_hp()
 		power.writebyte(0x1C)
-	#	ser.write(lcd_button_set["Standby"])
 		set_button("Standby")
 		selector.writebyte(config.selector_cache)
