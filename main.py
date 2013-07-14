@@ -49,14 +49,14 @@ while(1):
 	#Check screen saver time
 	if config.tick == config.SCREEN_SAVER_TIME:
 		set_form("Form5")
-		config.tick = 0
 		
 	#Check auto power off time
 	if config.auto_off == config.AUTO_OFF_TIME:
 		print "Auto off time reached ... standby"
+		set_command("LedOff")
 		config.selector_cache = selector.readbyte()
 		mute_hp()
 		power.writebyte(0x1C)
-		ser.write(lcd_button_set["Standby"])
+	#	ser.write(lcd_button_set["Standby"])
 		set_button("Standby")
 		selector.writebyte(config.selector_cache)

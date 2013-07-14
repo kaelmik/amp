@@ -67,6 +67,7 @@ lcd_button_get = {
 	"PowerOn"  : '\x07\x06\x03\x00\x00\x02',
 	"MuteOn"   : '\x07\x06\x08\x00\x01\x08',
 	"MuteOff"  : '\x07\x06\x08\x00\x00\x09',
+	"ScSaver"  : '\x07\x06\x06\x00\x00\x07',
 }
 
 lcd_button_set = {
@@ -84,6 +85,11 @@ lcd_form_set = {
 	"Form3"    : '\x01\x0a\x03\x00\x00\x08',
 	"Form4"    : '\x01\x0a\x04\x00\x00\x0f',
 	"Form5"    : '\x01\x0a\x05\x00\x00\x0e',
+}
+
+lcd_command = {
+	"LedOn"		: '\x04\x01\x05',
+	"LedOff"	: '\x04\x00\x04',
 }
 
 lcd_ack = '\x06'
@@ -166,6 +172,15 @@ def set_form(form):
 	else:
 		print ("{0} set error".format(form))
 
+#Set LCD command function	
+def set_command(command):
+	ser.write(lcd_command[command])
+	time.sleep(0.5)
+	if ser.read(1) == lcd_ack:
+		print ("{0} set".format(command))
+	else:
+		print ("{0} set error".format(command))
+
 #Set LCD button function		
 def set_button(button):
 	ser.write(lcd_button_set[button])
@@ -225,3 +240,10 @@ def serial_read():
 		print "Mute OFF"
 		unmute_hp()
 		reset_counter()
+	if s ==  lcd_button_get['ScSaver']:
+		print "Screen saver OFF"
+		reset_counter()
+		set_form("Form1")
+		set_time()
+		set_command("LedOn")
+		
