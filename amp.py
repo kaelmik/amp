@@ -51,7 +51,7 @@ spk_r_en = pca9554.Pca9554(bus_id=0, address=SELECT_IO, line=7)
 #PCA9554 Power Instances
 power = pca9554.Pca9554(bus_id=0, address=POWER_IO)
 amp_r = pca9554.Pca9554(bus_id=0, address=POWER_IO, line=0)
-amp_l = pca9554.Pca9554(bus_id=0, address=POWER_IO, line=0)
+amp_l = pca9554.Pca9554(bus_id=0, address=POWER_IO, line=1)
 p12va = pca9554.Pca9554(bus_id=0, address=POWER_IO, line=2)
 m12va = pca9554.Pca9554(bus_id=0, address=POWER_IO, line=3)
 dvdd = pca9554.Pca9554(bus_id=0, address=POWER_IO, line=4)
