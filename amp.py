@@ -9,7 +9,7 @@
 # Description		: Preamplifier library and define
 ################################################################################
 
-import ablib, serial, smbus, time, pca9554, datetime, config
+import ablib, serial, smbus, time, pca9554, datetime, config, spidev
 from operator import xor
 
 #Define peripheral I2C address on PB1007A Board
@@ -36,6 +36,10 @@ lcd_power=ablib.Pin('J7','35','low') #open an instance for lcd reset pin (Kernel
 
 #Open i2c_bus instance (/dev/i2c-0 on PB1007A) 
 bus = smbus.SMBus(0)
+
+#Open SPI bus instance for PGA2320
+pga2320 = spidev.SpiDev()
+pga2320.open(1,0)
 
 #PCA9554 Selector Instances
 selector = pca9554.Pca9554(bus_id=0, address=SELECT_IO)
@@ -68,6 +72,7 @@ lcd_button_get = {
 	"MuteOn"   : '\x07\x06\x08\x00\x01\x08',
 	"MuteOff"  : '\x07\x06\x08\x00\x00\x09',
 	"ScSaver"  : '\x07\x06\x06\x00\x00\x07',
+	"VolSlider": '\x07\x04\x00',
 }
 
 lcd_button_set = {
@@ -130,6 +135,7 @@ def unmute_hp():
 def gpio_init():
 	"""Set GPIO with Analog 1 input selected"""
 	mute_hp()
+	pga2320.writebytes([0, 0])
 	selector.set_dir_reg(0x00)
 	set_audio_input(SEL_ANALOG_1)
 	power.set_dir_reg(0x00)
@@ -246,4 +252,10 @@ def serial_read():
 		set_form("Form1")
 		set_time()
 		set_command("LedOn")
+	if lcd_button_get['VolSlider'] in s[:14]:
+		reset_counter()
+		value = s[4]
+		volume = (ord(value))+40
+		pga2320.writebytes([volume, volume])
+		print ("Volume set to {0}".format(volume))
 		
