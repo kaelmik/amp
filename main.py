@@ -23,6 +23,9 @@ lcd_init()
 #GPIO init
 gpio_init()
 
+#Set volume to mute
+set_volume(0)
+
 #Set Form1
 set_form("Form1")
 

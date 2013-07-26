@@ -27,3 +27,6 @@ auto_off = 0
 
 #Selector cache
 selector_cache = 0
+
+#Volume
+volume = 0

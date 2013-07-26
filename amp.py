@@ -39,7 +39,6 @@ bus = smbus.SMBus(0)
 
 #Open SPI bus instance for PGA2320
 pga2320 = spidev.SpiDev()
-pga2320.open(1,0)
 
 #PCA9554 Selector Instances
 selector = pca9554.Pca9554(bus_id=0, address=SELECT_IO)
@@ -135,7 +134,6 @@ def unmute_hp():
 def gpio_init():
 	"""Set GPIO with Analog 1 input selected"""
 	mute_hp()
-	pga2320.writebytes([0, 0])
 	selector.set_dir_reg(0x00)
 	set_audio_input(SEL_ANALOG_1)
 	power.set_dir_reg(0x00)
@@ -200,6 +198,25 @@ def set_button(button):
 def reset_counter():
 	config.tick = 0
 	config.auto_off = 0
+	
+#Set volume function
+def set_volume(volume):
+	pga2320.open(1,0)
+	old_vol = config.volume
+	config.volume = volume
+	if config.volume > old_vol :
+		while old_vol < config.volume:
+			old_vol += 1
+			pga2320.writebytes([old_vol, old_vol])
+			time.sleep(0.01)
+	elif config.volume < old_vol :
+		while old_vol > config.volume:
+			old_vol -= 1
+			pga2320.writebytes([old_vol, old_vol])
+			time.sleep(0.01)
+	pga2320.close()
+	gain = 31.5 - (0.5 * (255 - volume))
+	print ("Volume set to {0} dB".format(gain))
 
 #Read serial port for data from LCD
 def serial_read():		
@@ -252,10 +269,10 @@ def serial_read():
 		set_form("Form1")
 		set_time()
 		set_command("LedOn")
-	if lcd_button_get['VolSlider'] in s[:14]:
+	if s[:3] == lcd_button_get['VolSlider']: #in s[:14]:
 		reset_counter()
 		value = s[4]
 		volume = (ord(value))+40
-		pga2320.writebytes([volume, volume])
-		print ("Volume set to {0}".format(volume))
+		set_volume(volume)
+
 		
