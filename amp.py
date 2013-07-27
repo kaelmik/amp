@@ -13,23 +13,24 @@ import ablib, serial, smbus, time, pca9554, datetime, config, spidev
 from operator import xor
 
 #Define peripheral I2C address on PB1007A Board
-POWER_IO = 0x38
+POWER_IO  = 0x38
 SELECT_IO = 0x39
-CS8416 = 0x10
-WM8742 = 0x1A
+CS8416    = 0x10
+WM8742    = 0x1A
 
 #Define Selector map
-MUTE_MASK = 0xC0
-SEL_MASK = 0x3F
+MUTE_MASK    = 0xC0
+SEL_MASK     = 0x3F
 SEL_ANALOG_1 = 0x01
 SEL_ANALOG_2 = 0x09
-SEL_SPDIF = 0x12
-SEL_TOSLINK = 0x22
-SEL_DLNA = 0x04
+SEL_SPDIF    = 0x12
+SEL_TOSLINK  = 0x22
+SEL_DLNA     = 0x04
 
 #Open serial port instance for LCD
 ser=serial.Serial('/dev/ttyS1')
-ser.timeout=1
+ser.timeout = 1
+ser.baudrate = 115200
 
 #Open LCD Power pin instance
 lcd_power=ablib.Pin('J7','35','low') #open an instance for lcd reset pin (Kernel ID 60)
@@ -41,15 +42,15 @@ bus = smbus.SMBus(0)
 pga2320 = spidev.SpiDev()
 
 #PCA9554 Selector Instances
-selector = pca9554.Pca9554(bus_id=0, address=SELECT_IO)
-ana_en = pca9554.Pca9554(bus_id=0, address=SELECT_IO, line=0)
-dig_en = pca9554.Pca9554(bus_id=0, address=SELECT_IO, line=1)
-dlna_en = pca9554.Pca9554(bus_id=0, address=SELECT_IO, line=2)
-rca_sel = pca9554.Pca9554(bus_id=0, address=SELECT_IO, line=3)
+selector   = pca9554.Pca9554(bus_id=0, address=SELECT_IO)
+ana_en     = pca9554.Pca9554(bus_id=0, address=SELECT_IO, line=0)
+dig_en     = pca9554.Pca9554(bus_id=0, address=SELECT_IO, line=1)
+dlna_en    = pca9554.Pca9554(bus_id=0, address=SELECT_IO, line=2)
+rca_sel    = pca9554.Pca9554(bus_id=0, address=SELECT_IO, line=3)
 toslink_en = pca9554.Pca9554(bus_id=0, address=SELECT_IO, line=4)
-spdif_en = pca9554.Pca9554(bus_id=0, address=SELECT_IO, line=5)
-spk_l_en = pca9554.Pca9554(bus_id=0, address=SELECT_IO, line=6)
-spk_r_en = pca9554.Pca9554(bus_id=0, address=SELECT_IO, line=7)
+spdif_en   = pca9554.Pca9554(bus_id=0, address=SELECT_IO, line=5)
+spk_l_en   = pca9554.Pca9554(bus_id=0, address=SELECT_IO, line=6)
+spk_r_en   = pca9554.Pca9554(bus_id=0, address=SELECT_IO, line=7)
 
 #PCA9554 Power Instances
 power = pca9554.Pca9554(bus_id=0, address=POWER_IO)
@@ -57,7 +58,7 @@ amp_r = pca9554.Pca9554(bus_id=0, address=POWER_IO, line=0)
 amp_l = pca9554.Pca9554(bus_id=0, address=POWER_IO, line=1)
 p12va = pca9554.Pca9554(bus_id=0, address=POWER_IO, line=2)
 m12va = pca9554.Pca9554(bus_id=0, address=POWER_IO, line=3)
-dvdd = pca9554.Pca9554(bus_id=0, address=POWER_IO, line=4)
+dvdd  = pca9554.Pca9554(bus_id=0, address=POWER_IO, line=4)
 
 #LCD Serial message
 lcd_button_get = {
@@ -147,7 +148,7 @@ def lcd_init():
 	lcd_power.on() #Release lcd reset pin
 	time.sleep(5) #Wait for screen to boot up
 	ser.write(lcd_button_set["Analog_1"])#set analog 1 input button
-	time.sleep(1)
+	time.sleep(0.5)
 	if ser.read(1) == lcd_ack: #read ACK from screen
 		print "Analog 1 set"
 	else:
@@ -158,11 +159,7 @@ def lcd_init():
 def set_time():
 	now = datetime.datetime.now()
 	time = now.strftime("%H:%M")
-	msg = [0x02, 0x01, 0x05]
-	msg += map(ord, time)
-	checksum = reduce(xor, msg)
-	ser.write("\x02\x01\x05{0}{1}".format(time, chr(checksum)))
-	if ser.read(1) == lcd_ack: #read ACK from screen
+	if send_string(0x01,time) == 1:
 		print ("set_time({0})".format(time))
 	else:
 		print "set_time() error"
@@ -194,6 +191,20 @@ def set_button(button):
 	else:
 		print ("{0} button set error".format(button))
 
+#Send LCD string
+def send_string(str_index, string_data):
+	msg = [0x02]
+	msg.append(str_index)
+	size = len(string_data)
+	msg.append(size)
+	msg += map(ord, string_data)
+	checksum = reduce(xor, msg)
+	ser.write("\x02{0}{1}{2}{3}".format(chr(str_index),chr(size),string_data,chr(checksum)))
+	if ser.read(1) == lcd_ack:
+		return 1
+	else:
+		return 0
+
 #Reset screen saver and auto-off counter		
 def reset_counter():
 	config.tick = 0
@@ -214,9 +225,15 @@ def set_volume(volume):
 			old_vol -= 1
 			pga2320.writebytes([old_vol, old_vol])
 			time.sleep(0.01)
+	elif config.volume == old_vol :
+		pga2320.writebytes([old_vol, old_vol])
 	pga2320.close()
 	gain = 31.5 - (0.5 * (255 - volume))
-	print ("Volume set to {0} dB".format(gain))
+	dbgain = str(gain) + "dB"
+	if send_string(0x02,dbgain) == 1:
+		print ("Volume set to {0} dB".format(gain))
+	else:
+		print "set_volume() error"
 
 #Read serial port for data from LCD
 def serial_read():		
@@ -251,7 +268,7 @@ def serial_read():
 		print "Power ON"
 		mute_hp()
 		power.writebyte(0x10)
-		time.sleep(1)
+		time.sleep(0.5)
 		power.writebyte(0x13)
 		selector.writebyte(config.selector_cache)
 		reset_counter()
@@ -268,6 +285,7 @@ def serial_read():
 		reset_counter()
 		set_form("Form1")
 		set_time()
+		set_volume(config.volume)
 		set_command("LedOn")
 	if s[:3] == lcd_button_get['VolSlider']: #in s[:14]:
 		reset_counter()

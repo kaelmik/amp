@@ -42,7 +42,7 @@ while(1):
 	
 	#Read serial port for input
 	serial_read()
-	time.sleep(0.2)
+	time.sleep(0.05)
 	
 	#Set current time every ~15 seconds
 	if t == 15 : 
