@@ -33,6 +33,9 @@ set_form("Form1")
 set_time()
 t = 0 
 
+#Set network status
+set_netled()
+
 #Process main loop
 while(1):
 	#Increment counter
@@ -47,6 +50,7 @@ while(1):
 	#Set current time every ~15 seconds
 	if t == 15 : 
 		set_time()
+		set_netled()
 		t = 0
 		
 	#Check screen saver time

@@ -9,7 +9,7 @@
 # Description		: Preamplifier library and define
 ################################################################################
 
-import ablib, serial, smbus, time, pca9554, datetime, config, spidev
+import ablib, serial, smbus, time, pca9554, datetime, config, spidev, urllib2
 from operator import xor
 
 #Define peripheral I2C address on PB1007A Board
@@ -95,6 +95,8 @@ lcd_form_set = {
 lcd_command = {
 	"LedOn"		: '\x04\x01\x05',
 	"LedOff"	: '\x04\x00\x04',
+	"NetOn"     : '\x01\x0e\x00\x00\x01\x0e',
+	"NetOff"    : '\x01\x0e\x00\x00\x00\x0f',
 }
 
 lcd_ack = '\x06'
@@ -130,7 +132,21 @@ def unmute_hp():
 	spk_l_en.set()
 	spk_r_en.set()
 	return
-  
+	
+#Check internet connexion function
+def check_net():
+    try:
+        response=urllib2.urlopen('http://173.194.70.94',timeout=1)
+        return True
+    except urllib2.URLError as err: pass
+    return False
+	
+def set_netled():
+	if check_net() == True:
+		set_command("NetOn")
+	if check_net() == False:
+		set_command("NetOff")
+	
 #GPIO Init function
 def gpio_init():
 	"""Set GPIO with Analog 1 input selected"""
@@ -212,6 +228,12 @@ def reset_counter():
 	
 #Set volume function
 def set_volume(volume):
+	gain = 31.5 - (0.5 * (255 - volume))
+	dbgain = str(gain) + "dB"
+	if send_string(0x02,dbgain) == 1:
+		print ("Volume set to {0} dB".format(gain))
+	else:
+		print "set_volume() error"
 	pga2320.open(1,0)
 	old_vol = config.volume
 	config.volume = volume
@@ -228,12 +250,6 @@ def set_volume(volume):
 	elif config.volume == old_vol :
 		pga2320.writebytes([old_vol, old_vol])
 	pga2320.close()
-	gain = 31.5 - (0.5 * (255 - volume))
-	dbgain = str(gain) + "dB"
-	if send_string(0x02,dbgain) == 1:
-		print ("Volume set to {0} dB".format(gain))
-	else:
-		print "set_volume() error"
 
 #Read serial port for data from LCD
 def serial_read():		
