@@ -25,6 +25,7 @@ gpio_init()
 
 #Set volume to mute
 set_volume(0)
+time.sleep(0.5)
 
 #Set Form1
 set_form("Form1")
@@ -50,7 +51,7 @@ while(1):
 	#Set current time every ~15 seconds
 	if t == 15 : 
 		set_time()
-		set_netled()
+	#	set_netled()
 		t = 0
 		
 	#Check screen saver time
