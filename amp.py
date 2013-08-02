@@ -279,6 +279,9 @@ def serial_read():
 		config.selector_cache = selector.readbyte()
 		mute_hp()
 		power.writebyte(0x1C)
+		time.sleep(1)
+		set_form("Form5")
+		set_command("LedOff")
 		reset_counter()
 	if s ==  lcd_button_get['PowerOn']:
 		print "Power ON"
@@ -300,8 +303,16 @@ def serial_read():
 		print "Screen saver OFF"
 		reset_counter()
 		set_form("Form1")
+		time.sleep(0.05)
 		set_time()
+		time.sleep(0.05)
 		set_volume(config.volume)
+		power.writebyte(0x13)
+		unmute_hp()
+		set_button("MuteOff")
+		time.sleep(0.05)
+		set_button("PowerOn")
+		time.sleep(0.05)
 		set_command("LedOn")
 	if s[:3] == lcd_button_get['VolSlider']: #in s[:14]:
 		reset_counter()
