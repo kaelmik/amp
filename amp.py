@@ -121,13 +121,13 @@ def set_audio_input(input):
 	selector.writebyte(input | mute_state)
 	return
 
-#Unmute HP Output
+#Mute HP Output
 def mute_hp():
 	spk_l_en.reset()
 	spk_r_en.reset()
 	return
 	
-#Mute HP Output
+#Unmute HP Output
 def unmute_hp():
 	spk_l_en.set()
 	spk_r_en.set()
