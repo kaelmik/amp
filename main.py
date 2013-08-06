@@ -34,6 +34,9 @@ set_form("Form1")
 set_time()
 t = 0 
 
+#Power state
+config.power_state = 1
+
 #Set network status
 set_netled()
 

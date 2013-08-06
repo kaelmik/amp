@@ -97,6 +97,7 @@ lcd_command = {
 	"LedOff"	: '\x04\x00\x04',
 	"NetOn"     : '\x01\x0e\x00\x00\x01\x0e',
 	"NetOff"    : '\x01\x0e\x00\x00\x00\x0f',
+	"Vol_0"		: '\x01\x04\x00\x00\x00\x05',
 }
 
 lcd_ack = '\x06'
@@ -282,6 +283,7 @@ def serial_read():
 		time.sleep(1)
 		set_form("Form5")
 		set_command("LedOff")
+		config.power_state = 0
 		reset_counter()
 	if s ==  lcd_button_get['PowerOn']:
 		print "Power ON"
@@ -306,6 +308,10 @@ def serial_read():
 		time.sleep(0.05)
 		set_time()
 		time.sleep(0.05)
+		if config.power_state == 0:
+			config.volume = 0
+			config.power_state = 1
+			set_command("Vol_0")
 		set_volume(config.volume)
 		power.writebyte(0x13)
 		unmute_hp()
@@ -314,7 +320,7 @@ def serial_read():
 		set_button("PowerOn")
 		time.sleep(0.05)
 		set_command("LedOn")
-	if s[:3] == lcd_button_get['VolSlider']: #in s[:14]:
+	if s[:3] == lcd_button_get['VolSlider']:
 		reset_counter()
 		value = s[4]
 		volume = (ord(value))+40

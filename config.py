@@ -30,3 +30,6 @@ selector_cache = 0
 
 #Volume
 volume = 0
+
+#Power state
+power_state = 0
