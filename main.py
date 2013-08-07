@@ -64,6 +64,7 @@ while(1):
 	#Check auto power off time
 	if config.auto_off == config.AUTO_OFF_TIME:
 		print "Auto off time reached ... standby"
+		config.power_state = 0
 		set_command("LedOff")
 		config.selector_cache = selector.readbyte()
 		mute_hp()
