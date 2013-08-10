@@ -184,7 +184,7 @@ def set_time():
 #Set LCD form function	
 def set_form(form):
 	ser.write(lcd_form_set[form])
-	time.sleep(0.5)
+	time.sleep(0.1)
 	if ser.read(1) == lcd_ack:
 		print ("{0} set".format(form))
 	else:
@@ -193,7 +193,7 @@ def set_form(form):
 #Set LCD command function	
 def set_command(command):
 	ser.write(lcd_command[command])
-	time.sleep(0.5)
+	time.sleep(0.1)
 	if ser.read(1) == lcd_ack:
 		print ("{0} set".format(command))
 	else:
@@ -202,7 +202,7 @@ def set_command(command):
 #Set LCD button function		
 def set_button(button):
 	ser.write(lcd_button_set[button])
-	time.sleep(0.5)
+	time.sleep(0.1)
 	if ser.read(1) == lcd_ack:
 		print ("{0} button set".format(button))
 	else:
@@ -289,7 +289,7 @@ def serial_read():
 		print "Power ON"
 		mute_hp()
 		power.writebyte(0x10)
-		time.sleep(0.5)
+		time.sleep(0.1)
 		power.writebyte(0x13)
 		selector.writebyte(config.selector_cache)
 		reset_counter()
@@ -304,21 +304,19 @@ def serial_read():
 	if s ==  lcd_button_get['ScSaver']:
 		print "Screen saver OFF"
 		reset_counter()
+		set_command("LedOff")
 		set_form("Form1")
-		time.sleep(0.05)
 		set_time()
-		time.sleep(0.05)
 		if config.power_state == 0:
 			config.volume = 0
 			config.power_state = 1
 			set_command("Vol_0")
+		set_netled()
 		set_volume(config.volume)
 		power.writebyte(0x13)
 		unmute_hp()
 		set_button("MuteOff")
-		time.sleep(0.05)
 		set_button("PowerOn")
-		time.sleep(0.05)
 		set_command("LedOn")
 	if s[:3] == lcd_button_get['VolSlider']:
 		reset_counter()

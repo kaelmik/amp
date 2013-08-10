@@ -54,7 +54,6 @@ while(1):
 	#Set current time every ~15 seconds
 	if t == 15 : 
 		set_time()
-	#	set_netled()
 		t = 0
 		
 	#Check screen saver time
