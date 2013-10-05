@@ -68,5 +68,6 @@ while(1):
 		config.selector_cache = selector.readbyte()
 		mute_hp()
 		power.writebyte(0x1C)
+		time.sleep(1)
 		set_button("Standby")
 		selector.writebyte(config.selector_cache)
