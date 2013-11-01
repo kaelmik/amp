@@ -9,8 +9,11 @@
 # Description		: Preamplifier library and define
 ################################################################################
 
-import ablib, serial, smbus, time, pca9554, datetime, config, spidev, urllib2
+import ablib, serial, smbus, time, pca9554, datetime, config, spidev, urllib2, os, sys
 from operator import xor
+
+
+
 
 #Define peripheral I2C address on PB1007A Board
 POWER_IO  = 0x38
@@ -77,6 +80,10 @@ lcd_button_get = {
 
 lcd_button_set = {
 	"Analog_1" : '\x01\x06\x0e\x00\x01\x08',
+	"Analog_2" : '\x01\x06\x0f\x00\x01\x09',
+	"SPDIF"    : '\x01\x06\x11\x00\x01\x17',
+	"TOSLINK"  : '\x01\x06\x10\x00\x01\x16',
+	"DLNA"     : '\x01\x06\x0d\x00\x01\x0b',
 	"MuteOn"   : '\x01\x06\x08\x00\x01\x0e',
 	"MuteOff"  : '\x01\x06\x08\x00\x00\x0f',
 	"Standby"  : '\x01\x06\x03\x00\x01\x05',
@@ -120,18 +127,25 @@ def set_audio_input(input):
 	oldvalue = selector.readbyte()
 	mute_state = oldvalue & MUTE_MASK
 	selector.writebyte(input | mute_state)
+	save_input(input)
 	return
 
 #Mute HP Output
 def mute_hp():
 	spk_l_en.reset()
 	spk_r_en.reset()
+	f = open('/root/ampsoft/mute', 'w')
+	f.write("1")
+	f.close()
 	return
 	
 #Unmute HP Output
 def unmute_hp():
 	spk_l_en.set()
 	spk_r_en.set()
+	f = open('/root/ampsoft/mute', 'w')
+	f.write("0")
+	f.close()
 	return
 	
 #Check internet connexion function
@@ -226,7 +240,41 @@ def send_string(str_index, string_data):
 def reset_counter():
 	config.tick = 0
 	config.auto_off = 0
-	
+
+#Write status to file
+def status(stat):
+	f = open('/root/ampsoft/stat', 'w')
+	f.write(stat)
+	f.close()
+
+#Read status to file
+def get_power():
+	f = open('/root/ampsoft/stat', 'r')
+	a=f.read()
+	f.close()
+	return a
+
+#Write volume to file
+def save_vol(vol):
+	vol -= 40
+	f = open('/root/ampsoft/vol', 'w')
+	f.write(str(vol))
+	f.close()
+
+#Get volume from file
+def get_vol():
+	f = open('/root/ampsoft/vol', 'r')
+	a=int(f.read())
+	f.close()
+	a += 40
+	return a
+
+#Write input to file
+def save_input(input):
+	f = open('/root/ampsoft/input', 'w')
+	f.write(str(input))
+	f.close()	
+
 #Set volume function
 def set_volume(volume):
 	gain = 31.5 - (0.5 * (255 - volume))
@@ -236,8 +284,9 @@ def set_volume(volume):
 	else:
 		print "set_volume() error"
 	pga2320.open(1,0)
-	old_vol = config.volume
+	old_vol = get_vol()
 	config.volume = volume
+	save_vol(volume)
 	if config.volume > old_vol :
 		while old_vol < config.volume:
 			old_vol += 1
@@ -252,6 +301,11 @@ def set_volume(volume):
 		pga2320.writebytes([old_vol, old_vol])
 	pga2320.close()
 
+wss=[]
+def wsSend(message):
+	for ws in wss:
+		ws.write_message(message)
+
 #Read serial port for data from LCD
 def serial_read():		
 	s = ser.read(6)
@@ -259,22 +313,27 @@ def serial_read():
 		print "Analog 1"
 		set_audio_input(SEL_ANALOG_1)
 		reset_counter()
+		wsSend(u"refresh")
 	if s == lcd_button_get['Analog_2']:
 		print "Analog 2"
 		set_audio_input(SEL_ANALOG_2)
 		reset_counter()
+		wsSend(u"refresh")
 	if s == lcd_button_get['SPDIF']:
 		print "SPDIF IN"
 		set_audio_input(SEL_SPDIF)
 		reset_counter()
+		wsSend(u"refresh")
 	if s == lcd_button_get['TOSLINK']:
 		print "Optical IN"
 		set_audio_input(SEL_TOSLINK)
 		reset_counter()
+		wsSend(u"refresh")
 	if s == lcd_button_get['DLNA']:
 		print "DLNA"
 		set_audio_input(SEL_DLNA)
 		reset_counter()
+		wsSend(u"refresh")
 	if s ==  lcd_button_get['Standby']:
 		print "Standby"
 		config.selector_cache = selector.readbyte()
@@ -284,7 +343,9 @@ def serial_read():
 		set_form("Form5")
 		set_command("LedOff")
 		config.power_state = 0
+		status("0")
 		reset_counter()
+		wsSend(u"refresh")
 	if s ==  lcd_button_get['PowerOn']:
 		print "Power ON"
 		mute_hp()
@@ -293,35 +354,42 @@ def serial_read():
 		power.writebyte(0x13)
 		selector.writebyte(config.selector_cache)
 		reset_counter()
+		wsSend(u"refresh")
 	if s ==  lcd_button_get['MuteOn']:
 		print "Mute ON"
 		mute_hp()
 		reset_counter()
+		wsSend(u"refresh")
 	if s ==  lcd_button_get['MuteOff']:
 		print "Mute OFF"
 		unmute_hp()
 		reset_counter()
+		wsSend(u"refresh")
 	if s ==  lcd_button_get['ScSaver']:
 		print "Screen saver OFF"
 		reset_counter()
 		set_command("LedOff")
 		set_form("Form1")
 		set_time()
-		if config.power_state == 0:
+		if get_power() == "0":
 			config.volume = 0
+			save_vol(0)
 			config.power_state = 1
 			set_command("Vol_0")
 		set_netled()
-		set_volume(config.volume)
+		set_volume(get_vol())
 		power.writebyte(0x13)
+		status("1")
 		unmute_hp()
 		set_button("MuteOff")
 		set_button("PowerOn")
 		set_command("LedOn")
+		wsSend(u"refresh")
 	if s[:3] == lcd_button_get['VolSlider']:
 		reset_counter()
 		value = s[4]
 		volume = (ord(value))+40
 		set_volume(volume)
+		wsSend(u"refresh")
 
 		

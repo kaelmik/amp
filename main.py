@@ -14,8 +14,16 @@
 # (at your option) any later version.
 ################################################################################
 
-import ablib, serial, smbus, time, config
+import ablib, serial, smbus, time, config, os, sys
 from amp import *
+import tornado.ioloop
+import tornado.web
+import tornado.websocket
+import threading
+import ampserv
+
+#sys_out = open(os.devnull, 'w')
+#sys.stdout = sys_out
 
 #Init LCD
 lcd_init()
@@ -36,9 +44,33 @@ t = 0
 
 #Power state
 config.power_state = 1
+status("1")
 
 #Set network status
 set_netled()
+
+#Define Tornado webserver API
+application = tornado.web.Application([
+	(r"/system",ampserv.system),
+	(r"/amp",ampserv.amp),
+	(r"/mute",ampserv.mute),
+	(r"/power",ampserv.power_set),
+	(r"/input",ampserv.input),
+	(r"/vol",ampserv.vol),
+	(r"/refresh",ampserv.refresh),
+	(r"/websocket",ampserv.WebSock),
+	(r"/(.*)", tornado.web.StaticFileHandler, {"path": "./www/","default_filename": "index.html"}),
+])
+
+#Function to start Tornado webserver
+def start_tornado():
+	application.listen(8080,"0.0.0.0")
+	tornado.ioloop.IOLoop.instance().start()
+
+
+#Launch Tornado in a new thread
+thread = threading.Thread(target=start_tornado)
+thread.start()
 
 #Process main loop
 while(1):
@@ -49,7 +81,7 @@ while(1):
 	
 	#Read serial port for input
 	serial_read()
-	time.sleep(0.05)
+	time.sleep(0.5)
 	
 	#Set current time every ~15 seconds
 	if t == 15 : 
@@ -64,6 +96,7 @@ while(1):
 	if config.auto_off == config.AUTO_OFF_TIME:
 		print "Auto off time reached ... standby"
 		config.power_state = 0
+		status("0")
 		set_command("LedOff")
 		config.selector_cache = selector.readbyte()
 		mute_hp()

@@ -16,7 +16,7 @@
 
 
 #Sreen saver and auto power off time
-SCREEN_SAVER_TIME = 480
+SCREEN_SAVER_TIME = 600
 AUTO_OFF_TIME = 5400
 
 #Screen saver counter
