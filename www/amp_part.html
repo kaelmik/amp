@@ -1,0 +1,51 @@
+<HEAD>
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Expires" CONTENT="-1">
+</HEAD>
+<div class="polaroid">
+
+<fieldset>
+	<legend><strong>Amplifier control</strong></legend></br>
+
+<form action="/power" method="POST" target="hidden_frame">
+        <span class="switch switch-green" >
+	   <input type='hidden' value="0" name="power">
+          <input type="checkbox" name="power" value="1" id="power" {{power}} onchange="submit();">
+          <label for="power" data-on="On" data-off="Off"></label>
+        </span>&nbsp Power ON/OFF</br></br>
+</form>
+
+<form action="/mute" method="POST" target="hidden_frame">
+        <span class="switch switch-green" >
+	   <input type='hidden' value="0" name="ampmute">
+          <input type="checkbox" name="ampmute" value="1" id="ampmute"  {{mute}} onchange="submit();">
+          <label for="ampmute" data-on="On" data-off="Off"></label>
+        </span>&nbsp Master Mute </br></br></br>
+</form> 
+
+<form action="/vol" method="POST" target="hidden_frame">
+	 Volume control :</br></br>
+	 <input type="range" type="range" style="width: 200px; " name="volum" min="0" max="200" value={{volume}} onclick="submit();" onchange="submit();" step="2"/>
+</form>
+
+</br>
+</fieldset>
+
+</div></br></br>
+
+<div class="polaroid">
+<fieldset>
+<legend ><strong>Input select</strong></legend></br>
+<form action="/input" method="POST" target="hidden_frame">
+	<select name="inputs" onchange="submit();">
+        <option {{ana1}} value="SEL_ANALOG_1">Analog 1</option>
+        <option {{ana2}} value="SEL_ANALOG_2">Analog 2</option>
+        <option {{spdif}} value="SEL_SPDIF">S/PDIF</option>
+        <option {{tos}} value="SEL_TOSLINK">Optical Toslink</option>
+        <option {{dlna}} value="SEL_DLNA">DLNA/Network</option>
+    </select></p>
+
+</form>
+    </fieldset>
+</div></br></br>
+

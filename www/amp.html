@@ -1,0 +1,152 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+
+<title>Amplifier command</title>
+
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<META HTTP-EQUIV="Expires" CONTENT="-1">
+
+<link rel="stylesheet" type="text/css" href="style/style.css" />
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+<script>
+$.ajaxSetup({ cache: false });
+	function sendCmd(cmd) {
+		$.ajax({
+			url: cmd,
+			success: function( data ) {
+				$("#state_line").text(data);
+			},
+			error: function () {
+				$("#state_line").text("Error");
+			}
+		});
+	}
+
+function refresh(){
+	$.get('/refresh', function(data) {
+ 		 $('#amp').html(data);
+	});
+}
+
+
+
+
+	var ws = new WebSocket("ws://192.168.1.3:8080/websocket");
+	
+	ws.onopen = function() {
+  		ws.send("Hello, world");
+	};
+	ws.onmessage = function (evt) {
+  		refresh();
+	};
+
+
+function send_ws(){
+  	ws.send("Hello, boy");
+
+}
+
+</script>
+
+</head>
+<body>
+
+
+<h2>Audio parameters</h2>
+<div id="amp">
+<div class="polaroid">
+
+<fieldset>
+	<legend><strong>Amplifier control</strong></legend></br>
+
+<form action="/power" method="POST" target="hidden_frame">
+        <span class="switch switch-green" >
+	   <input type='hidden' value="0" name="power">
+          <input type="checkbox" name="power" value="1" id="power" {{power}} onchange="submit();">
+          <label for="power" data-on="On" data-off="Off"></label>
+        </span>&nbsp Power ON/OFF</br></br>
+</form>
+
+<form action="/mute" method="POST" target="hidden_frame">
+        <span class="switch switch-green" >
+	   <input type='hidden' value="0" name="ampmute">
+          <input type="checkbox" name="ampmute" value="1" id="ampmute"  {{mute}} onchange="submit();">
+          <label for="ampmute" data-on="On" data-off="Off"></label>
+        </span>&nbsp Master Mute </br></br></br>
+</form> 
+
+<form action="/vol" method="POST" target="hidden_frame">
+	 Volume control :</br></br>
+	 <input type="range" type="range" style="width: 200px; " name="volum" min="0" max="200" value={{volume}} onclick="submit();" onchange="submit();" step="2"/>
+</form>
+
+</br>
+</fieldset>
+
+</div></br></br>
+
+<div class="polaroid">
+<fieldset>
+<legend ><strong>Input select</strong></legend></br>
+<form action="/input" method="POST" target="hidden_frame">
+	<select name="inputs" onchange="submit();">
+        <option {{ana1}} value="SEL_ANALOG_1">Analog 1</option>
+        <option {{ana2}} value="SEL_ANALOG_2">Analog 2</option>
+        <option {{spdif}} value="SEL_SPDIF">S/PDIF</option>
+        <option {{tos}} value="SEL_TOSLINK">Optical Toslink</option>
+        <option {{dlna}} value="SEL_DLNA">DLNA/Network</option>
+    </select></p>
+
+</form>
+    </fieldset>
+</div></br></br>
+</div>
+
+<div class="polaroid">
+<fieldset >
+<legend ><strong>DLNA Mixer settings</strong></legend></br>
+	Audio chip {{audio_hw}}</br></br>
+	<form action="/cgi-bin/setvolume.cgi" method="GET" target="hidden_frame" >
+	<abbr title="This control is not intented to use as volume control but should be used once for gain setting to match the output of Fox Streaming board with your audio system. 
+	Value comprise between 0-100%.">
+	Master Gain</abbr> :<br/><br/> <input type="range" style="width: 200px; name="volume" min="50" max="100" id="volume" onchange="submit();" step="5"/>
+	</form></br></br>
+	
+	<form action="/cgi-bin/mixer.cgi" method="POST" target="hidden_frame">
+	<span class="switch switch-green" >
+		<input  type="checkbox" name="mute" id="mute" value="mute" onclick="submit();" />
+		<label for="mute" data-on="On" data-off="Off"></label>
+	</span>&nbsp&nbsp&nbspDLNA Mute</br></br>
+
+	<span class="switch switch-green" >
+		<input type="checkbox" name="zerocross" id="zerocross" value="zerocross" />
+		<label for="zerocross" data-on="On" data-off="Off"></label>
+	</span>&nbsp&nbsp&nbspPlayback Zero Crossing</br></br>
+
+	<span class="switch switch-green" >
+		<input type="checkbox" name="deemp" id="deemp" value="deemp" />
+		<label for="deemp" data-on="On" data-off="Off"></label>
+	</span>&nbsp&nbsp&nbspPlayback Deemphasis</br></br>
+
+	<span class="switch switch-green" >
+		<input type="checkbox" name="hpf" id="hpf" value="hpf" />
+		<label for="hpf" data-on="On" data-off="Off"></label>
+	</span>&nbsp&nbsp&nbspADC High Pass Filter</br></br>
+
+	<center><input class="button button-dark-blue" type="submit" id="Submit" value="Set parameters" /></center></br>
+</form> 
+</fieldset>
+</div>
+
+
+<center>
+<br/>
+<br/><?php echo date("r");?></li>
+</font>
+</center>
+</body>
+</html>

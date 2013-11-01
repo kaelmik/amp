@@ -1,0 +1,26 @@
+<html><head><title>System Info for {{hostname}}</title>
+<link rel="stylesheet" type="text/css" href="style/style.css" />
+</head>
+
+<h1General system informations for host {{hostname}}</h1>
+	<pre>OS {{uname}}</pre>
+<h2>Audio hardware parameters</h2>
+	<pre>{{audio_hw}}</pre>
+	<pre>{{hw_params}}</pre>
+<h2>Uptime</h2>
+	<pre>{{uptime}}</pre>
+<h2>USB Devices</h2>
+	<pre>{{lsusb}}</pre>
+<h2>Disk Info</h2>
+	<pre>{{df_h}}</pre>
+<h2>Memory Info</h2>
+	<pre>{{free_m}}</pre>
+<h2>Network Info</h2>
+Interfaces
+	<pre>{{ifconfig}}</pre>
+Wireless
+	<pre>{{iwconfig}}</pre>
+<h2>Logged in user</h2>
+	<pre>{{w}}</pre>
+<center>Informations generated on {{date}}</center>
+</body></html>

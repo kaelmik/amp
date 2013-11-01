@@ -1,0 +1,15 @@
+#!/bin/bash
+
+echo "Content-type: text/html"
+echo ""
+echo "<html><head><title>System Info for $(hostname -s)</title>"
+echo "<link rel="stylesheet" type="text/css" href="../style/style.css" />"
+echo "<meta name="viewport" content="width=device-width" />"
+echo "</head><body>"
+echo "<h2>Wifi Networks found nearby</h2>"
+echo "Networks names :"
+echo "<pre>$(sudo /usr/bin/wifiscan.sh | grep ESSID)</pre>"
+echo "Detaild informations :"
+echo "<pre>$(iwlist scan)</pre>"
+echo "<center>Information generated on $(date)</center>"
+echo "</body></html>"

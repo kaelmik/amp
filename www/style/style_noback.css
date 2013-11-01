@@ -1,0 +1,81 @@
+body {
+	background-color: white;
+	align: center;
+	//background-image: url("../images/back3.jpg");
+	background-repeat: repeat;
+	
+}
+
+img
+{  border-style: none;
+}
+
+a:link {
+	COLOR: Black;
+	Text-Decoration: none;
+	//border-bottom: 1px dotted #333;
+}
+
+a:visited {
+	COLOR: Black;
+	border: none; 
+    	outline: none;
+}
+
+a:hover {
+	COLOR: Gray;
+}
+
+a:active {
+	COLOR: Black;
+	border: none; 
+    	outline: none; 
+
+}
+
+a:selected {
+	border: none; 
+    	outline: none;
+}
+
+h1 {font-family: arial, verdana, sans-serif;}
+
+p,li {
+	font-family: arial, verdana, sans-serif;
+	text-align: right;
+	font-variant : small-caps;
+	
+}
+
+
+table {
+  width: 90%; /* La largeur c'est pour le test, mais ça montre qu'il est aussi possible de la spécifier en CSS */
+  border: 6px dashed gray; /* Et on met une jolie bordure originale autour du tableau */
+  background-color : #E6E6E6
+
+}
+caption {
+  text-align: center; /* Classique : texte centré */
+  font-style: italic; /*             en italique  */
+  font-weight: bold;  /*             en gras      */
+  color: #0066CC;     /*             et en bleu   */
+}
+th { /* Préférable à thead car offre plus de possibilités */
+  background-color: #D3E2ED; /* Chaque case d'en-tête aura un fond bleu */
+  color: #666666;             /* Et un gris un peu plus foncé que la moyenne */
+}
+td {
+  /*border: 1px inset gray;*/ /* Vous pouvez essayer de dé-commenter : cela produit un affichage classique des cases */
+}
+
+div.polaroid2
+{
+height: 500;
+padding:20px 0px 0px 0px;
+border:2px solid #BFBFBF;
+background-color:#wite;
+/* Add box-shadow */
+box-shadow:4px 4px 6px #aaaaaa;
+
+
+
