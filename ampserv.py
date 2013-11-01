@@ -17,74 +17,9 @@
 import tornado.ioloop
 import tornado.web
 import tornado.websocket
-import ablib, serial, smbus, time, datetime, spidev, urllib2, commands, os
+import ablib, serial, smbus, time, datetime, spidev, urllib2, commands, os, socket, sys
 from operator import xor
-
-import sys
 from amp import *
-
-#Select audio input  
-def set_audio_input(input):
-	if input == SEL_SPDIF:
-		i2c_write(CS8416, 0x04, 0x80)
-		i2c_write(CS8416, 0x05, 0x80)
-	elif input == SEL_TOSLINK:
-		i2c_write(CS8416, 0x04, 0x89)
-		i2c_write(CS8416, 0x05, 0x80)
-	else:
-		i2c_write(CS8416, 0x04, 0x00)
-		i2c_write(CS8416, 0x05, 0x00)
-	oldvalue = selector.readbyte()
-	mute_state = oldvalue & MUTE_MASK
-	selector.writebyte(input | mute_state)
-	save_input(input)
-	return
-
-
-
-#Send LCD string
-def send_string(str_index, string_data):
-	msg = [0x02]
-	msg.append(str_index)
-	size = len(string_data)
-	msg.append(size)
-	msg += map(ord, string_data)
-	checksum = reduce(xor, msg)
-	ser.write("\x02{0}{1}{2}{3}".format(chr(str_index),chr(size),string_data,chr(checksum)))
-	ser.read(1)
-
-
-#Set LCD form function	
-def set_form(form):
-	ser.write(lcd_form_set[form])
-	time.sleep(0.1)
-	ser.read(1)
-
-#Set LCD command function	
-def set_command(command):
-	ser.write(lcd_command[command])
-	time.sleep(0.1)
-	ser.read(1)
-
-#Write input to file
-def save_input(input):
-	f = open('/root/ampsoft/input', 'w')
-	f.write(str(input))
-	f.close()
-
-#Write power status to file
-def status(stat):
-	f = open('/root/ampsoft/stat', 'w')
-	f.write(stat)
-	f.close()
-
-#Set Volume Slider
-def set_vol_slider(slider_data):
-	msg = [0x01]
-	msg.append(0x04)
-	msg.append(slider_data)
-	checksum = reduce(xor, msg)
-	ser.write("\x01\x04\x00\x00{0}{1}".format(chr(slider_data),chr(checksum)))
 
 class system(tornado.web.RequestHandler):
     def get(self):
@@ -114,6 +49,18 @@ class system(tornado.web.RequestHandler):
 			w = w,
 			date = date,
 		)
+
+class home(tornado.web.RequestHandler):
+    def get(self):
+	hostname = socket.gethostname()
+	date = commands.getoutput("date")
+	tset = "asd"
+	self.render("www/home.html", title="Amplifier Home", 
+			hostname = hostname,
+			date = date,
+		)
+
+
 
 class amp(tornado.web.RequestHandler):
     def get(self):

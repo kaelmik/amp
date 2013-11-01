@@ -52,6 +52,7 @@ set_netled()
 #Define Tornado webserver API
 application = tornado.web.Application([
 	(r"/system",ampserv.system),
+	(r"/home",ampserv.home),
 	(r"/amp",ampserv.amp),
 	(r"/mute",ampserv.mute),
 	(r"/power",ampserv.power_set),
@@ -60,7 +61,7 @@ application = tornado.web.Application([
 	(r"/refresh",ampserv.refresh),
 	(r"/websocket",ampserv.WebSock),
 	(r"/(.*)", tornado.web.StaticFileHandler, {"path": "./www/","default_filename": "index.html"}),
-])
+],debug=False)
 
 #Function to start Tornado webserver
 def start_tornado():

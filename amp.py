@@ -12,9 +12,6 @@
 import ablib, serial, smbus, time, pca9554, datetime, config, spidev, urllib2, os, sys
 from operator import xor
 
-
-
-
 #Define peripheral I2C address on PB1007A Board
 POWER_IO  = 0x38
 SELECT_IO = 0x39
@@ -221,6 +218,14 @@ def set_button(button):
 		print ("{0} button set".format(button))
 	else:
 		print ("{0} button set error".format(button))
+
+#Set Volume Slider
+def set_vol_slider(slider_data):
+	msg = [0x01]
+	msg.append(0x04)
+	msg.append(slider_data)
+	checksum = reduce(xor, msg)
+	ser.write("\x01\x04\x00\x00{0}{1}".format(chr(slider_data),chr(checksum)))
 
 #Send LCD string
 def send_string(str_index, string_data):
