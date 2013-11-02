@@ -60,6 +60,7 @@ application = tornado.web.Application([
 	(r"/vol",ampserv.vol),
 	(r"/refresh",ampserv.refresh),
 	(r"/websocket",ampserv.WebSock),
+	(r"/reboot",ampserv.reboot),
 	(r"/(.*)", tornado.web.StaticFileHandler, {"path": "./www/","default_filename": "index.html"}),
 ],debug=False)
 

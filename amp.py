@@ -131,7 +131,7 @@ def set_audio_input(input):
 def mute_hp():
 	spk_l_en.reset()
 	spk_r_en.reset()
-	f = open('/root/ampsoft/mute', 'w')
+	f = open('/root/ampsoft/var/mute', 'w')
 	f.write("1")
 	f.close()
 	return
@@ -140,7 +140,7 @@ def mute_hp():
 def unmute_hp():
 	spk_l_en.set()
 	spk_r_en.set()
-	f = open('/root/ampsoft/mute', 'w')
+	f = open('/root/ampsoft/var/mute', 'w')
 	f.write("0")
 	f.close()
 	return
@@ -248,13 +248,13 @@ def reset_counter():
 
 #Write status to file
 def status(stat):
-	f = open('/root/ampsoft/stat', 'w')
+	f = open('/root/ampsoft/var/stat', 'w')
 	f.write(stat)
 	f.close()
 
 #Read status to file
 def get_power():
-	f = open('/root/ampsoft/stat', 'r')
+	f = open('/root/ampsoft/var/stat', 'r')
 	a=f.read()
 	f.close()
 	return a
@@ -262,13 +262,13 @@ def get_power():
 #Write volume to file
 def save_vol(vol):
 	vol -= 40
-	f = open('/root/ampsoft/vol', 'w')
+	f = open('/root/ampsoft/var/vol', 'w')
 	f.write(str(vol))
 	f.close()
 
 #Get volume from file
 def get_vol():
-	f = open('/root/ampsoft/vol', 'r')
+	f = open('/root/ampsoft/var/vol', 'r')
 	a=int(f.read())
 	f.close()
 	a += 40
@@ -276,7 +276,7 @@ def get_vol():
 
 #Write input to file
 def save_input(input):
-	f = open('/root/ampsoft/input', 'w')
+	f = open('/root/ampsoft/var/input', 'w')
 	f.write(str(input))
 	f.close()	
 

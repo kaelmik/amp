@@ -66,7 +66,7 @@ class amp(tornado.web.RequestHandler):
     def get(self):
 	audio_hw = commands.getoutput("cat /proc/asound/card0/pcm0p/info | grep id")
 	power,ana1,ana2,spdif,tos,dlna = "","","","","",""
-	f = open('/root/ampsoft/input', 'r')
+	f = open('/root/ampsoft/var/input', 'r')
 	input=int(f.read())
 	f.close()
 	if input == 0x01 :
@@ -79,21 +79,21 @@ class amp(tornado.web.RequestHandler):
 		tos = "selected"
 	elif input == 0x04 : 
 		dlna = "selected"
-	f = open('/root/ampsoft/stat', 'r')
+	f = open('/root/ampsoft/var/stat', 'r')
 	a=f.read()
 	f.close()
 	if a == "0":
 		power = "unchecked"
 	if a == "1":
 		power = "checked"
-	f = open('/root/ampsoft/mute', 'r')
+	f = open('/root/ampsoft/var/mute', 'r')
 	mute=f.read()
 	f.close()
 	if mute == "0":
 		mute = "unchecked"
 	if mute == "1":
 		mute = "checked"
-	f = open('/root/ampsoft/vol', 'r')
+	f = open('/root/ampsoft/var/vol', 'r')
 	volume=(int(f.read()))
 	f.close()
 	self.render("www/amp.html", title="Amplifier Settings", 
@@ -110,7 +110,7 @@ class refresh(tornado.web.RequestHandler):
     def get(self):
 	audio_hw = commands.getoutput("cat /proc/asound/card0/pcm0p/info | grep id")
 	power,ana1,ana2,spdif,tos,dlna = "","","","","",""
-	f = open('/root/ampsoft/input', 'r')
+	f = open('/root/ampsoft/var/input', 'r')
 	input=int(f.read())
 	f.close()
 	if input == 0x01 :
@@ -123,21 +123,21 @@ class refresh(tornado.web.RequestHandler):
 		tos = "selected"
 	elif input == 0x04 : 
 		dlna = "selected"
-	f = open('/root/ampsoft/stat', 'r')
+	f = open('/root/ampsoft/var/stat', 'r')
 	a=f.read()
 	f.close()
 	if a == "0":
 		power = "unchecked"
 	if a == "1":
 		power = "checked"
-	f = open('/root/ampsoft/mute', 'r')
+	f = open('/root/ampsoft/var/mute', 'r')
 	mute=f.read()
 	f.close()
 	if mute == "0":
 		mute = "unchecked"
 	if mute == "1":
 		mute = "checked"
-	f = open('/root/ampsoft/vol', 'r')
+	f = open('/root/ampsoft/var/vol', 'r')
 	volume=(int(f.read()))
 	f.close()
 	self.render("www/amp_part.html", title="Amplifier Settings", 
@@ -157,6 +157,10 @@ class mute(tornado.web.RequestHandler):
 			mute_hp()
 			set_button("MuteOn")
 
+class reboot(tornado.web.RequestHandler):
+	def get(self):
+		os.system("shutdown -r now")
+
 class power_set(tornado.web.RequestHandler):
 	def post(self):
 		if self.get_argument("power")=="0":
@@ -170,7 +174,7 @@ class power_set(tornado.web.RequestHandler):
 			pga2320.open(1,0)
 			pga2320.writebytes([0, 0])
 			pga2320.close()
-			f = open('/root/ampsoft/vol', 'w')
+			f = open('/root/ampsoft/var/vol', 'w')
 			f.write("0")
 			f.close()
 		if self.get_argument("power")=="1":
@@ -179,7 +183,7 @@ class power_set(tornado.web.RequestHandler):
 			pga2320.open(1,0)
 			pga2320.writebytes([0, 0])
 			pga2320.close()
-			f = open('/root/ampsoft/vol', 'w')
+			f = open('/root/ampsoft/var/vol', 'w')
 			f.write("0")
 			f.close()
 			set_vol_slider(0)
@@ -200,7 +204,7 @@ class vol(tornado.web.RequestHandler):
 		gain = 31.5 - (0.5 * (255 - volum))
 		dbgain = str(gain) + "dB"
 		send_string(0x02,dbgain)
-		f = open('/root/ampsoft/vol', 'w')
+		f = open('/root/ampsoft/var/vol', 'w')
 		f.write(self.get_argument("volum"))
 		f.close()
 		set_vol_slider(volum-40)
