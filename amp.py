@@ -306,6 +306,7 @@ def set_volume(volume):
 		pga2320.writebytes([old_vol, old_vol])
 	pga2320.close()
 
+#Websocket function
 wss=[]
 def wsSend(message):
 	for ws in wss:

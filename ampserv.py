@@ -54,13 +54,21 @@ class home(tornado.web.RequestHandler):
     def get(self):
 	hostname = socket.gethostname()
 	date = commands.getoutput("date")
-	tset = "asd"
 	self.render("www/home.html", title="Amplifier Home", 
 			hostname = hostname,
 			date = date,
 		)
 
-
+class network(tornado.web.RequestHandler):
+    def get(self):
+	date = commands.getoutput("date")
+	network_names = commands.getoutput("iwlist scan | grep ESSID")
+	iwlist_scan = commands.getoutput("iwlist scan")
+	self.render("www/network.html", title="Amplifier Network", 
+			date = date,
+			network_names = network_names,
+			iwlist_scan = iwlist_scan,
+		)
 
 class amp(tornado.web.RequestHandler):
     def get(self):
@@ -103,8 +111,6 @@ class amp(tornado.web.RequestHandler):
 			audio_hw = audio_hw,
 			ana1=ana1,ana2=ana2,spdif=spdif,tos=tos,dlna=dlna,
 		)
-
-
 
 class refresh(tornado.web.RequestHandler):
     def get(self):
