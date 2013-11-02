@@ -183,6 +183,7 @@ class power_set(tornado.web.RequestHandler):
 			f = open('/root/ampsoft/var/vol', 'w')
 			f.write("0")
 			f.close()
+			wsSend(u"refresh")
 		if self.get_argument("power")=="1":
 			power.writebyte(0x13)
 			set_form("Form1")
@@ -202,6 +203,7 @@ class power_set(tornado.web.RequestHandler):
 			time.sleep(0.1)
 			set_command("LedOn")
 			status("1")
+			wsSend(u"refresh")
 
 class vol(tornado.web.RequestHandler):
 	def post(self):
