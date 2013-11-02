@@ -162,6 +162,7 @@ class mute(tornado.web.RequestHandler):
 		if self.get_argument("ampmute")=="1":
 			mute_hp()
 			set_button("MuteOn")
+		wsSend(u"refresh")
 
 class reboot(tornado.web.RequestHandler):
 	def get(self):
@@ -219,6 +220,7 @@ class vol(tornado.web.RequestHandler):
 		pga2320.open(1,0)
 		pga2320.writebytes([volum, volum])
 		pga2320.close()
+		wsSend(u"refresh")
 
 class input(tornado.web.RequestHandler):
 	def post(self):
@@ -238,6 +240,7 @@ class input(tornado.web.RequestHandler):
 		elif self.get_argument("inputs")== "SEL_DLNA" :
 			set_audio_input(SEL_DLNA)
 			set_button("DLNA")
+		wsSend(u"refresh")
 
 class WebSock(tornado.websocket.WebSocketHandler):
 	def open(self):
