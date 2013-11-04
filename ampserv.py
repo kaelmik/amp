@@ -18,6 +18,7 @@ import tornado.ioloop
 import tornado.web
 import tornado.websocket
 import ablib, serial, smbus, time, datetime, spidev, urllib2, commands, os, socket, sys
+import subprocess, string, fileinput, re, shutil
 from operator import xor
 from amp import *
 
@@ -154,6 +155,61 @@ class refresh(tornado.web.RequestHandler):
 			ana1=ana1,ana2=ana2,spdif=spdif,tos=tos,dlna=dlna,
 		)
 
+class wifi_set(tornado.web.RequestHandler):
+    def post(self):
+		date = commands.getoutput("date")
+		essid = self.get_argument("essid")
+		key = self.get_argument("key")
+		if self.get_argument("dropdown"):
+			subject = self.get_argument("dropdown")
+		else:
+			subject = "Note entered"
+		psk = ""
+
+		#WPA-PSK calcul de la cle wpa et ecriture du fichier interface(editface)
+		if subject == "WPA" :
+			passcommand=("wpa_passphrase" + " " + essid + " " + key)
+			u=commands.getoutput(passcommand) #wpa_passphrase command
+			temp = re.search('(?<==)\w+', u) #extract psk after = 
+			psk = temp.group(0) 
+			s = open("/usr/www-data/webconf/ifacewpa").read()
+			s = s.replace('wpassid', essid)
+			s = s.replace('wpakey',psk)
+			f = open('/usr/www-data/webconf/editface','w')
+			f.write(s)
+			f.close()
+
+		#WEP transfert les parametres au fichier interface(editface)
+		if subject == "WEP" :	
+			s = open("/usr/www-data/webconf/ifacewep").read()
+			s = s.replace('wepssid', essid)
+			s = s.replace('wepkey',key)
+			f = open('/usr/www-data/webconf/editface','w')
+			f.write(s)
+			f.close()
+
+		#Open transfer le nom du reseau au fichier interfaces(editface)
+		if subject == "Open" :
+			s = open("/usr/www-data/webconf/ifaceopen").read()
+			s = s.replace('openssid', essid)
+			f = open('/usr/www-data/webconf/editface','w')
+			f.write(s)
+			f.close()
+
+		#Render error message if no encryption selected
+		if subject == "Select":
+			self.render("www/wifiset400.html", title="Wifi parameters error") 
+		else :
+			shutil.copy('/etc/network/interfaces', '/etc/network/interfaces.bak') #make backup
+			shutil.copy('/usr/www-data/webconf/editface', '/etc/network/interfaces') #write new interfaces
+			self.render("www/wifiset.html", title="Wifi parameters set",
+					encrypt = subject,
+					essid = essid,
+					key = key,
+					psk = psk,
+					date = date,
+				) 
+
 class mute(tornado.web.RequestHandler):
 	def post(self):
 		if self.get_argument("ampmute")=="0":
@@ -167,6 +223,10 @@ class mute(tornado.web.RequestHandler):
 class reboot(tornado.web.RequestHandler):
 	def get(self):
 		os.system("shutdown -r now")
+
+class net_restart(tornado.web.RequestHandler):
+	def post(self):
+		os.system("/etc/init.d/networking restart")
 
 class power_set(tornado.web.RequestHandler):
 	def post(self):
