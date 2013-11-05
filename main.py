@@ -109,3 +109,4 @@ while(1):
 		time.sleep(1)
 		set_button("Standby")
 		selector.writebyte(config.selector_cache)
+		wsSend(u"refresh")

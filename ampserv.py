@@ -63,7 +63,7 @@ class home(tornado.web.RequestHandler):
 class network(tornado.web.RequestHandler):
     def get(self):
 	date = commands.getoutput("date")
-	network_names = commands.getoutput("iwlist scan | grep ESSID")
+	network_names = commands.getoutput("iwlist scan 2>/dev/null | grep ESSID")
 	iwlist_scan = commands.getoutput("iwlist scan")
 	self.render("www/network.html", title="Amplifier Network", 
 			date = date,
@@ -280,7 +280,6 @@ class vol(tornado.web.RequestHandler):
 		pga2320.open(1,0)
 		pga2320.writebytes([volum, volum])
 		pga2320.close()
-		wsSend(u"refresh")
 
 class input(tornado.web.RequestHandler):
 	def post(self):
