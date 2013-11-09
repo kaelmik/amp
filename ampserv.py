@@ -245,6 +245,7 @@ class power_set(tornado.web.RequestHandler):
 			f.write("0")
 			f.close()
 			wsSend(u"refresh")
+			reset_counter()
 		if self.get_argument("power")=="1":
 			power.writebyte(0x13)
 			set_form("Form1")
@@ -265,6 +266,7 @@ class power_set(tornado.web.RequestHandler):
 			set_command("LedOn")
 			status("1")
 			wsSend(u"refresh")
+			reset_counter()
 
 class vol(tornado.web.RequestHandler):
 	def post(self):
