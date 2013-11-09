@@ -29,10 +29,6 @@ a:visited {
     	outline: none;
 }
 
-a:hover {
-	COLOR: Gray;
-}
-
 a:active {
 	COLOR: Black;
 	border: none; 
@@ -68,7 +64,23 @@ fieldset {
 
 }
 
+.menu{
+padding:0px 0px 7px 3px;
+-moz-box-shadow: inset 0px -5px #3061a3;
+-webkit-box-shadow: inset  0px -5px #3061a3;
+box-shadow: inset  0px -5px #3061a3;
+}
 
+.menu:hover{
+COLOR: black;
+box-shadow:inset -2px -5px  #3974f0;
+}
+
+.menu:visited{
+##border-bottom-color: #BFBFBF;
+COLOR: black;
+box-shadow:inset -2px -5px  #3974f0;
+}
 
 div.polaroid
 {
