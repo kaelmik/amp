@@ -172,27 +172,27 @@ class wifi_set(tornado.web.RequestHandler):
 			u=commands.getoutput(passcommand) #wpa_passphrase command
 			temp = re.search('(?<==)\w+', u) #extract psk after = 
 			psk = temp.group(0) 
-			s = open("/usr/www-data/webconf/ifacewpa").read()
+			s = open("/root/ampsoft/iface/ifacewpa").read()
 			s = s.replace('wpassid', essid)
 			s = s.replace('wpakey',psk)
-			f = open('/usr/www-data/webconf/editface','w')
+			f = open('/root/ampsoft/iface/editface','w')
 			f.write(s)
 			f.close()
 
 		#WEP transfert les parametres au fichier interface(editface)
 		if subject == "WEP" :	
-			s = open("/usr/www-data/webconf/ifacewep").read()
+			s = open("/root/ampsoft/iface/ifacewep").read()
 			s = s.replace('wepssid', essid)
 			s = s.replace('wepkey',key)
-			f = open('/usr/www-data/webconf/editface','w')
+			f = open('/root/ampsoft/iface/editface','w')
 			f.write(s)
 			f.close()
 
 		#Open transfer le nom du reseau au fichier interfaces(editface)
 		if subject == "Open" :
-			s = open("/usr/www-data/webconf/ifaceopen").read()
+			s = open("/root/ampsoft/iface/ifaceopen").read()
 			s = s.replace('openssid', essid)
-			f = open('/usr/www-data/webconf/editface','w')
+			f = open('/root/ampsoft/iface/editface','w')
 			f.write(s)
 			f.close()
 
@@ -201,7 +201,7 @@ class wifi_set(tornado.web.RequestHandler):
 			self.render("www/wifiset400.html", title="Wifi parameters error") 
 		else :
 			shutil.copy('/etc/network/interfaces', '/etc/network/interfaces.bak') #make backup
-			shutil.copy('/usr/www-data/webconf/editface', '/etc/network/interfaces') #write new interfaces
+			shutil.copy('/root/ampsoft/iface/editface', '/etc/network/interfaces') #write new interfaces
 			self.render("www/wifiset.html", title="Wifi parameters set",
 					encrypt = subject,
 					essid = essid,
