@@ -57,13 +57,13 @@ PB1007A powered by  <a href="http://wiki.debian.org/DebianWheezy" target="_blank
 
 <ul>
 <form autocomplete="off" action="/api/wifi_set" method="post">
-	Encryption <select name="dropdown" required>
-		<option value="Select" selected>Please select...</option>
+	Encryption <select required name="dropdown" required>
+		<option value="" selected>Please select...</option>
 		<option value="Open">Open</option>
 		<option value="WEP">WEP</option>
 		<option value="WPA">WPA</option>
 		</select><br/><br/>
-	ESSID <input type="text" name="essid" size="18"><br/><br/>
+	ESSID <input type="text" name="essid" size="18" required><br/><br/>
 	Key&nbsp&nbsp&nbsp&nbsp <input type="password" name="key" size="18"><br/><br/>
 	&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
 	<input class="button button-dark-blue" type="submit"  value="Submit"/>
