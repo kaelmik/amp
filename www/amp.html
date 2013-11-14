@@ -110,7 +110,7 @@ function send_ws(){
 <fieldset >
 <legend ><strong>DLNA Mixer settings</strong></legend></br>
 	Audio chip {{audio_hw}}</br></br>
-	<form action="/cgi-bin/setvolume.cgi" method="GET" target="hidden_frame" >
+	<form action="/api/alsa_vol" method="GET" target="hidden_frame" >
 	<abbr title="This control is not intented to use as volume control but should be used once for gain setting to match the output of Fox Streaming board with your audio system. 
 	Value comprise between 0-100%.">
 	Master Gain</abbr> :<br/><br/> <input type="range" style="width: 200px; name="volume" min="50" max="100" id="volume" onchange="submit();" step="5"/>
