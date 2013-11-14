@@ -130,7 +130,7 @@ def set_audio_input(input):
 	oldvalue = selector.readbyte()
 	mute_state = oldvalue & MUTE_MASK
 	selector.writebyte(input | mute_state)
-	save_input(input)
+	write_to(file_input, input)
 	return
 
 #Mute HP Output
@@ -364,7 +364,7 @@ def serial_read():
 		set_form("Form5")
 		set_command("LedOff")
 		config.power_state = 0
-		status("0")
+		write_to(file_power,"0")
 		reset_counter()
 		wsSend(u"refresh")
 	if s ==  lcd_button_get['PowerOn']:
@@ -400,7 +400,7 @@ def serial_read():
 		set_netled()
 		set_volume(get_vol())
 		power.writebyte(0x13)
-		status("1")
+		write_to(file_power"1")
 		unmute_hp()
 		set_button("MuteOff")
 		set_button("PowerOn")
