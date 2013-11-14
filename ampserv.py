@@ -19,6 +19,7 @@ import tornado.web
 import tornado.websocket
 import ablib, serial, smbus, time, datetime, spidev, urllib2, commands, os, socket, sys
 import subprocess, string, fileinput, re, shutil
+import alsaaudio
 from operator import xor
 from amp import *
 
@@ -302,6 +303,12 @@ class input(tornado.web.RequestHandler):
 			set_audio_input(SEL_DLNA)
 			set_button("DLNA")
 		wsSend(u"refresh")
+		
+class alsa_volume(tornado.web.RequestHandler):
+	def get(self):
+		volume = self.get_argument("volume")
+		mixer = alsaaudio.Mixer('Master')
+		mixer.setvolume(int(volume))		
 
 class WebSock(tornado.websocket.WebSocketHandler):
 	def open(self):

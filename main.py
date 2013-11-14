@@ -64,6 +64,7 @@ application = tornado.web.Application([
 	(r"/api/network",ampserv.network),
 	(r"/api/wifi_set",ampserv.wifi_set),
 	(r"/api/net_restart",ampserv.net_restart),
+	(r"/api/alsa_vol",ampserv.alsa_volume),
 	(r"/(.*)", tornado.web.StaticFileHandler, {"path": "/root/ampsoft/www/","default_filename": "index.html"}),
 ],debug=False)
 
