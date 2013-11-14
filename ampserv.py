@@ -308,8 +308,21 @@ class alsa_volume(tornado.web.RequestHandler):
 	def get(self):
 		volume = self.get_argument("volume")
 		mixer = alsaaudio.Mixer('Master')
-		mixer.setvolume(int(volume))		
+		mixer.setvolume(int(volume))
 
+class alsa_mixer(tornado.web.RequestHandler):
+	def post(self):
+		mixer = alsaaudio.Mixer('Output Mixer HiFi')
+		MuteState = self.get_argument('mute')
+		if MuteState == 'true':
+			mixer.setmute(1)
+		elif MuteState == 'mute':
+			mixer.setmute(1)
+		elif MuteState == 'false':
+			mixer.setmute(0)
+		elif MuteState == None :
+			mixer.setmute(0)
+			
 class WebSock(tornado.websocket.WebSocketHandler):
 	def open(self):
 		print "WebSocket opened"

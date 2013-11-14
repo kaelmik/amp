@@ -116,7 +116,7 @@ function send_ws(){
 	Master Gain</abbr> :<br/><br/> <input type="range" style="width: 200px; name="volume" min="50" max="100" id="volume" onchange="submit();" step="5"/>
 	</form></br></br>
 	
-	<form action="/cgi-bin/mixer.cgi" method="POST" target="hidden_frame">
+	<form action="/api/alsa_mixer" method="POST" target="hidden_frame">
 	<span class="switch switch-green" >
 		<input  type="checkbox" name="mute" id="mute" value="mute" onclick="submit();" />
 		<label for="mute" data-on="On" data-off="Off"></label>
