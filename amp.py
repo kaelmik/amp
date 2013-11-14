@@ -27,6 +27,12 @@ SEL_SPDIF    = 0x12
 SEL_TOSLINK  = 0x22
 SEL_DLNA     = 0x04
 
+#Declare files to save status varialbe
+file_mute = config.mute
+file_vol = config.vol
+file_input = config.input
+file_power = config.power
+
 #Open serial port instance for LCD
 ser=serial.Serial('/dev/ttyS1')
 ser.timeout = 1
@@ -131,18 +137,14 @@ def set_audio_input(input):
 def mute_hp():
 	spk_l_en.reset()
 	spk_r_en.reset()
-	f = open('/root/ampsoft/var/mute', 'w')
-	f.write("1")
-	f.close()
+	write_to(file_mute, "1")
 	return
 	
 #Unmute HP Output
 def unmute_hp():
 	spk_l_en.set()
 	spk_r_en.set()
-	f = open('/root/ampsoft/var/mute', 'w')
-	f.write("0")
-	f.close()
+	write_to(file_mute, "0")
 	return
 	
 #Check internet connexion function
@@ -250,6 +252,19 @@ def reset_counter():
 def status(stat):
 	f = open('/root/ampsoft/var/stat', 'w')
 	f.write(stat)
+	f.close()
+	
+#Read from file
+def read_from(file)
+	f = open(file, 'r')
+	a = f.read()
+	f.close()
+	return a
+
+#Write to file
+def write_to(file, data)
+	f = open(file, 'w')
+	f.write(str(data))
 	f.close()
 
 #Read status to file

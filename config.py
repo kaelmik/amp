@@ -19,6 +19,12 @@
 SCREEN_SAVER_TIME = 600
 AUTO_OFF_TIME = 5400
 
+#File to save variable
+mute  = '/root/ampsoft/var/mute'
+vol   = '/root/ampsoft/var/vol'
+input = '/root/ampsoft/var/input'
+power = '/root/ampsoft/var/stat'
+
 #Screen saver counter
 tick = 0
 
