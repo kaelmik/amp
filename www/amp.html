@@ -111,14 +111,15 @@ function send_ws(){
 <legend ><strong>DLNA Mixer settings</strong></legend></br>
 	Audio chip {{audio_hw}}</br></br>
 	<form action="/api/alsa_vol" method="GET" target="hidden_frame" >
-	<abbr title="This control is not intented to use as volume control but should be used once for gain setting to match the output of Fox Streaming board with your audio system. 
+	<abbr title="This control is not intented to use as volume control but should be used once for gain setting to match the output of audio codec with your audio system. 
 	Value comprise between 0-100%.">
-	Master Gain</abbr> :<br/><br/> <input type="range" style="width: 200px; name="volume" min="50" max="100" id="volume" onchange="submit();" step="5"/>
+	Master Gain</abbr> :<br/><br/> <input value={{dlna_vol}} type="range" style="width: 200px;" name="volume" min="50" max="100" id="volume" onchange="submit();" step="5"/>
 	</form></br></br>
 	
 	<form action="/api/alsa_mixer" method="POST" target="hidden_frame">
 	<span class="switch switch-green" >
-		<input  type="checkbox" name="mute" id="mute" value="mute" onclick="submit();" />
+		<input type='hidden' value="0" name="mute">
+		<input  type="checkbox" name="mute" id="mute" value="1" {{dlna_mute}} onclick="submit();" />
 		<label for="mute" data-on="On" data-off="Off"></label>
 	</span>&nbsp&nbsp&nbspDLNA Mute</br></br>
 
@@ -145,7 +146,7 @@ function send_ws(){
 
 <center>
 <br/>
-<br/><?php echo date("r");?></li>
+<br/>
 </font>
 </center>
 </body>

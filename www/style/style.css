@@ -299,7 +299,7 @@ textarea, input[type="text"],input[type="password"], fieldset.elist ul, select, 
 
 input[type="text"],input[type="password"], fieldset.elist, select, fieldset.elist > legend {
     height: 32px;
-    font-family: Tahoma;
+    font-family: arial, verdana;
     font-size: 14px;
 }
 

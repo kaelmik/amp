@@ -76,6 +76,13 @@ class amp(tornado.web.RequestHandler):
     def get(self):
 	audio_hw = commands.getoutput("cat /proc/asound/card0/pcm0p/info | grep id")
 	power,ana1,ana2,spdif,tos,dlna = "","","","","",""
+	mixer = alsaaudio.Mixer('Master')
+	dlna_vol = str(mixer.getvolume('playback')[0])
+	mixer = alsaaudio.Mixer('Output Mixer HiFi')
+	if str(mixer.getmute()[0]) == '0':
+		dlna_mute = ""
+	elif str(mixer.getmute()[0]) == '1':
+		dlna_mute = "checked"
 	f = open('/root/ampsoft/var/input', 'r')
 	input=int(f.read())
 	f.close()
@@ -111,6 +118,8 @@ class amp(tornado.web.RequestHandler):
 			mute = mute,
 			volume = volume,
 			audio_hw = audio_hw,
+			dlna_vol = dlna_vol,
+			dlna_mute = dlna_mute,
 			ana1=ana1,ana2=ana2,spdif=spdif,tos=tos,dlna=dlna,
 		)
 
@@ -313,14 +322,10 @@ class alsa_volume(tornado.web.RequestHandler):
 class alsa_mixer(tornado.web.RequestHandler):
 	def post(self):
 		mixer = alsaaudio.Mixer('Output Mixer HiFi')
-		MuteState = self.get_argument('mute')
-		if MuteState == 'true':
+		MuteState = self.get_argument("mute")
+		if MuteState == '1':
 			mixer.setmute(1)
-		elif MuteState == 'mute':
-			mixer.setmute(1)
-		elif MuteState == 'false':
-			mixer.setmute(0)
-		elif MuteState == None :
+		elif MuteState == '0' :
 			mixer.setmute(0)
 			
 class WebSock(tornado.websocket.WebSocketHandler):
