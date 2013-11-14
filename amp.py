@@ -255,14 +255,14 @@ def status(stat):
 	f.close()
 	
 #Read from file
-def read_from(file)
+def read_from(file):
 	f = open(file, 'r')
 	a = f.read()
 	f.close()
 	return a
 
 #Write to file
-def write_to(file, data)
+def write_to(file, data):
 	f = open(file, 'w')
 	f.write(str(data))
 	f.close()
@@ -400,7 +400,7 @@ def serial_read():
 		set_netled()
 		set_volume(get_vol())
 		power.writebyte(0x13)
-		write_to(file_power"1")
+		write_to(file_power,"1")
 		unmute_hp()
 		set_button("MuteOff")
 		set_button("PowerOn")
