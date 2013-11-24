@@ -67,7 +67,7 @@
 							style="width:18%"
 							onclick="remoteRenderer.controller.seek(seekField.value)"/>
 						<input id="seekField" style="padding:2px;width:40px;" type="text" value="0" disabled="disabled"
-							style="width:10%"/>
+							style=""/>
 						<input  class="button button-dark-blue buttonDlna" id="nextButton" type="button" value="Next" disabled="disabled"
 							style="width:18%"
 							onclick="nextTrack()"/>
@@ -81,7 +81,7 @@
 							style="width:10%"/>&nbsp&nbsp&nbsp
 						Prefetch : 
 						<input id="prefetchCheckBox" type="checkbox" disabled="disabled"
-							style="width:10%"/>
+							style=""/>
 						<hr>
 						<input  class="button button-dark-blue buttonDlna" id="volButton" type="button" value="Volume" disabled="disabled"
 							style="width:18%"
@@ -90,13 +90,15 @@
 							style="width:50%"/>&nbsp&nbsp&nbsp
 						Mute : 
 						<input id="muteCheckBox" type="checkbox" disabled="disabled"
-							style="width:10%"
+							style=""
 							onchange="muteCheckBoxChanged()"/>
 						<hr>
 						<input id="localRenderingCheckBox" type="checkbox" checked="checked"
-							style="width:10%"
+							style=""
 							onchange="localRenderingCheckBoxChanged()"/>
-						Local rendering
+						Local rendering <div align=center id="mediaContent" class="content"
+							colspan=2 style="width:100%;min-height:38px;">
+						</div>
 						<hr>
 						<!--
 						<input  class="button button-dark-blue buttonDlna" style="width:100%" id="deleteButton" type="button" value="Remove content" onclick="removeCurrentContent()">
@@ -146,12 +148,7 @@
 								<option value="ASC" selected="selected">ascending</option>
 								<option value="DESC">descending</option>
 							</select>
-						</td>
-					</tr>
-					<tr>
-						<td align=center id="mediaContent" class="content"
-							colspan=2 style="width:100%;height:40px">
-						</td>
+						</td>	
 					</tr>
 					<tr class="contentRow" align=center>
 						<td valign=top align=center id="folderInfo" style="width=50% !important;height:300px" colspan=2>
