@@ -220,6 +220,11 @@ class wifi_set(tornado.web.RequestHandler):
 					date = date,
 				) 
 
+class dlna(tornado.web.RequestHandler):
+    def get(self):
+	self.render("www/dlna.html", title="DLNA Control", 
+		)
+
 class mute(tornado.web.RequestHandler):
 	def post(self):
 		if self.get_argument("ampmute")=="0":

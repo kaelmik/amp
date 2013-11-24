@@ -6,7 +6,6 @@ body {
 	background-color: white;
 	font-family: arial, verdana, sans-serif;
 	font-size:small;
-
 }
 
 pre {
@@ -14,8 +13,8 @@ pre {
 
 }
 
-img
-{  border-style: none;
+img{
+	border-style: none;
 }
 
 a:link {
@@ -43,78 +42,69 @@ a:selected {
 
 
 h1 { /** gros titre */
-  font-family:  arial, verdana, sans-serif;;     
-  color: black;              
-  text-align: left;         /* Le titre doit être centré ! */
+	font-family:  arial, verdana, sans-serif;;     
+	color: black;              
+	text-align: left;         /* Le titre doit être centré ! */
 }
 
 
 
 abbr, acronym, .aide {
-  border-bottom: 1px dotted #333;
-  cursor: help;
+	border-bottom: 1px dotted #333;
+	cursor: help;
 }
 
 fieldset {
-    border: 1px #0099CC solid;
-    border-radius: 5px;
-    width:240px;
-  margin-left: auto;
-  margin-right: auto;
-
+	border: 1px #0099CC solid;
+	border-radius: 5px;
+	width:240px;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .menu{
-padding:0px 0px 7px 3px;
--moz-box-shadow: inset 0px -5px #3061a3;
--webkit-box-shadow: inset  0px -5px #3061a3;
-box-shadow: inset  0px -5px #3061a3;
+	padding:0px 0px 7px 3px;
+	-moz-box-shadow: inset 0px -5px #3061a3;
+	-webkit-box-shadow: inset  0px -5px #3061a3;
+	box-shadow: inset  0px -5px #3061a3;
 }
 
 .menu:hover{
-COLOR: black;
-box-shadow:inset -2px -5px  #3974f0;
+	COLOR: black;
+	box-shadow:inset -2px -5px  #3974f0;
 }
 
 .menu:visited{
-##border-bottom-color: #BFBFBF;
-COLOR: black;
-box-shadow:inset -2px -5px  #3974f0;
+	##border-bottom-color: #BFBFBF;
+	COLOR: black;
+	box-shadow:inset -2px -5px  #3974f0;
 }
 
-div.polaroid
-{
-width:280px;
-padding:10px 10px 20px 10px;
-border:1px solid #BFBFBF;
-background-color:white;
-/* Add box-shadow */
-box-shadow:2px 2px 3px #aaaaaa;
-
-
+div.polaroid{
+	width:280px;
+	padding:10px 10px 20px 10px;
+	border:1px solid #BFBFBF;
+	background-color:white;
+	/* Add box-shadow */
+	box-shadow:2px 2px 3px #aaaaaa;
 }
 
-div.polaroid2
-{
-
-padding:10px 10px 20px 10px;
-border:1px solid #BFBFBF;
-background-color:white;
-/* Add box-shadow */
-box-shadow:2px 2px 3px #aaaaaa;
+div.polaroid2{
+	padding:10px 10px 20px 10px;
+	border:1px solid #BFBFBF;
+	background-color:white;
+	/* Add box-shadow */
+	box-shadow:2px 2px 3px #aaaaaa;
 }
 
-div.title
-{
-
-padding:0px 0px 0px 00px;
-border:0px solid #0099CC ;
-background-color:BLACK;
-/* Add box-shadow */
-box-shadow:10px 10px 1px #0099CC ;
-color:white;
-font-family: arial,;
-
+div.title{
+	padding:0px 0px 0px 00px;
+	border:0px solid #0099CC ;
+	background-color:BLACK;
+	/* Add box-shadow */
+	box-shadow:10px 10px 1px #0099CC ;
+	color:white;
+	font-family: arial,;
 }
 
 
@@ -278,6 +268,7 @@ fieldset.elist, input[type="text"],input[type="password"], textarea, select, opt
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 box-shadow:2px 2px 3px #aaaaaa;
+    margin:3px;
 }
 
 input[type="text"],input[type="password"] {
@@ -293,9 +284,7 @@ textarea {
 textarea, input[type="text"],input[type="password"], fieldset.elist ul, select, fieldset.elist > legend {
     border: 1px #0099CC solid;
     border-radius: 5px;
-
 }
-
 
 input[type="text"],input[type="password"], fieldset.elist, select, fieldset.elist > legend {
     height: 32px;
@@ -316,11 +305,29 @@ select {
 }
 
 option {
-    height: 30px;
+    height: 26px;
     padding: 5px 4px;
+  
 }
 
+option:hover {  background-color: #0099CC ;
+			color:white;
+ }
 
+option:active { background:color #0099CC;
+			color:white;
+}
+
+table {
+	border-collapse: separate;
+	cell-spacing:4px;
+	border-color:white;
+	valign:center;
+}
+
+hr {
+	border: 1px dashed #ddddff;
+} 
 
 fieldset.elist > legend:after, fieldset.elist label {
     height: 28px;
@@ -341,15 +348,16 @@ input[type="text"]:focus,input[type="password"]:focus, textarea:focus, select:fo
 
 
 
-button{margin:0;line-height:normal;font-family:inherit;font-size:100%;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}
+button{margin:2;line-height:normal;font-family:inherit;font-size:100%;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}
 ::-moz-focus-inner{padding:0 !important;border:0 !important}
 ::-webkit-search-decoration,::-webkit-search-cancel-button{-webkit-appearance:none}
 .button{
 	display:inline-block;
+	margin: 2px;
 	vertical-align:top;
-	height:26px;
+	height:28px;
 	line-height:1;
-	padding:0 16px;
+	
 	font-size:13px;
 	color:#243140;
 	text-align:center;
@@ -506,5 +514,52 @@ input[type='range']::-webkit-slider-thumb {
     		border: 0px solid white ;
 		       height: 15px;
 	}
+}
+
+.content {
+	background-color:lightgrey;
+	border-style:solid;
+	border-width:0px;
+	margin:3px;
+}
+
+.selectedContent {
+    color: #F7E9E9;
+    background-color:#666;
+}
+
+.singleRow {
+	height:5%;
+	min-height:20px;
+}
+
+.listboxRow {
+	height:10%;
+	min-height:60px;
+	
+}
+
+.contentRow {
+	height:50%;
+	min-height:300px;
+}
+
+.listContent {
+	margin: 3px;
+	width:50%;
+	padding:5px;
+}
+
+.listContent:hover {
+	background-color:#3974c3;
+}
+
+.buttonDlna {
+	margin: 2px;
+}
+
+
+dlna.input[type="text"],dlna.input[type="password"], dlna.select, option, {
+	height:26px
 }
 
