@@ -296,6 +296,14 @@ input[type="text"]:hover,input[type="password"]:hover, textarea:hover, fieldset.
     background-color: #ddddff;
 }
 
+input[type="text"]:disabled,input[type="text"]:disabled:hover{
+	background-color:lightgrey;
+}
+
+input:disabled,input:disabled:hover,input[type="range"]:disabled{
+	background-color:#a4a4a4;
+}
+
 select:hover{
     background-color: #ddddff;
 }
