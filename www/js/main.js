@@ -22,9 +22,12 @@
 	var selectedItem;
 	// Current operation: browse / search + folder
 	var currentOp;
-
-
-
+	//Continus playback implementation
+	var currentList = [];
+	var listplayStatus = "";
+	var listCount = 0;
+	var stopsur = "";
+	var trackNumber;
 	//
 	// Browser-supported media types 
 	//
@@ -95,6 +98,7 @@
 	
 	function initPage() {
 		// init HTML DOM elements
+		log = document.getElementById("log");
 		mainView = document.getElementById("mainView");
 		localRenderingCheckBox = document.getElementById("localRenderingCheckBox");
 		muteCheckBox = document.getElementById("muteCheckBox");
@@ -226,24 +230,29 @@
 		remoteRenderer = renderer;
 		if (remoteRenderer) {
 			speedButton.disabled = speedField.disabled = speedList.disabled = playButton.disabled = pauseButton.disabled = stopButton.disabled = volButton.disabled = volField.disabled = nextButton.disabled = previousButton.disabled = trackButton.disabled = trackField.disabled = seekButton.disabled = seekField.disabled = muteCheckBox.disabled = prefetchCheckBox.disabled = false;
-			while(speedList.options.length) 
-				speedList.options.remove(0);
+			//while(speedList.options.length) 
+				//speedList.options.remove(0);
 			// set the renderer's controller onstatuschanged method
 			remoteRenderer.controller.onstatuschanged = function() {
+				listplayStatus = this.playbackStatus;
+				if((this.playbackStatus=="stopped")&&(stopsur=="play")&&(prefetchCheckBox.checked)){
+					playlistManage();
+				}
+				log.innerHTML=this.playbackStatus;
 				muteCheckBox.checked = this.muted;
 				volField.value = this.volume;
-				trackField.value = this.track;
-				speedField.value = this.speed;
-				if (speedList.options.length != this.playSpeeds.length) {
-					while(speedList.options.length) 
-						speedList.options.remove(0);
-					for (var i=0; i<this.playSpeeds.length; i++) {
-						var node = document.createElement("option");
-						node.value = this.playSpeeds[i];
-						node.innerHTML = this.playSpeeds[i] + " X";
-						speedList.add(node);
-					}
-				}
+				//trackField.value = this.track;
+				//speedField.value = this.speed;
+				//if (speedList.options.length != this.playSpeeds.length) {
+					//while(speedList.options.length) 
+						//speedList.options.remove(0);
+					//for (var i=0; i<this.playSpeeds.length; i++) {
+						//var node = document.createElement("option");
+						//node.value = this.playSpeeds[i];
+						//node.innerHTML = this.playSpeeds[i] + " X";
+						//speedList.add(node);
+					//}
+				//}
 			}
 			// call it to initialize UI
 			remoteRenderer.controller.onstatuschanged.apply(remoteRenderer.controller);
@@ -283,13 +292,19 @@
 	}
 	
 	function nextTrack() {
-		remoteRenderer.controller.next();
-		trackField.value = remoteRenderer.controller.track;
+		//remoteRenderer.controller.next();
+		//trackField.value = remoteRenderer.controller.track;
+		remoteRenderer.controller.stop();
 	}
 	
 	function previousTrack() {
 		remoteRenderer.controller.previous();
 		trackField.value = remoteRenderer.controller.track;
+	}
+	
+	function stopRendButton(){
+		stopsur="";
+		remoteRenderer.controller.stop();
 	}
 
 	
@@ -387,6 +402,19 @@
 		return node;
 	}
 	
+	function playlistManage(){
+		var renderer = remoteRenderer;
+		var rendererOpen = function(metaData) {
+						renderer.openURI(currentList[listCount-1].content.uri,metaData).catch(debugLog);	
+				}
+		currentList[listCount].getMetaData().then(rendererOpen,function(){rendererOpen(null);});
+		listCount++;
+		stopsur="";
+		trackField.value=listCount;
+		setTimeout(function(){stopsur = "play"},3000);	
+		return;
+	}
+	
 	function containerContentsItemOnClick() {
 		clearContentArea();
 		if (this.mediaContainer) {
@@ -395,20 +423,26 @@
 		}
 		this.className = "content selectedContent listContent";
 		selectedItem = this;
+		listCount = this.trackNumber;
+		trackField.value=listCount;
 		if (remoteRenderer) {
 			var renderer = remoteRenderer;
 			var mediaItem = this.mediaItem;
 			var rendererOpen = function(metaData) {
 				if (prefetchCheckBox.checked) {
-					prefetchCheckBox.checked = false;
-					renderer.prefetchURI(mediaItem.content.uri, metaData).catch(debugLog);
-				}
-				else {
+					//prefetchCheckBox.checked = false;
+					//renderer.prefetchURI(mediaItem.content.uri, metaData).catch(debugLog);
+					//for (count; count<currentList.length; count++) {
+						//renderer.openURI(currentList[count].content.uri,metaData).catch(debugLog);	
+						//while (remoteRenderer.playbackStatus == "Playing"){
+						setTimeout(function(){stopsur = "play"},3000);
+						}	
 					renderer.openURI(mediaItem.content.uri, metaData).catch(debugLog);
 				}
-			};
+			
 			mediaItem.getMetaData().then(rendererOpen,function(){rendererOpen(null);});
 			return;
+			
 		}
 		var node = null;
 		if (this.mediaItem.type.indexOf("image") == 0) {
@@ -592,7 +626,7 @@
 
     
 	function findInMediaSourceContainer(source, container, nameQuery) {
-		var findCount = 20;
+		var findCount = 40;
 		var findOffset = 0;
 		var searchQuery = nameQuery ? ("DisplayName contains \"" + nameQuery + "\"") : "*";
 		var localOp = "Find_" + source.id + "_" + container.id + "_" + nameQuery;
@@ -649,7 +683,7 @@
 
     
 	function browseMediaSourceContainer(source, container) {
-		var browseCount = 20;
+		var browseCount = 40;
 		var browseOffset = 0;
 		var localOp = "Browse_" + source.id + "_" + container.id;
 		
@@ -664,12 +698,15 @@
 				return;
 			for (var i=0; i<mediaObjectArray.length; i++) {
 				var node = null;
+				trackNumber = i;
 				if (mediaObjectArray[i].type == "container") {
 					node = containerBrowsingListItem(source, mediaObjectArray[i]);
 				}
 				else {
 					node = mediaItemElement(mediaObjectArray[i]);
 				}
+				currentList[i] = mediaObjectArray[i];
+				node.trackNumber = trackNumber;
 				node.mediaItem = mediaObjectArray[i];
 				node.onclick = containerContentsItemOnClick;
 				outLog.appendChild(node);

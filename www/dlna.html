@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, target-densityDpi=device-dpi">
     <meta name="description" content="dLeyna DLNA Player / Controller web application"/>
 
-    <title>Cloud dLeyna</title>
+    <title>PB1007A dLeyna</title>
 
     <link rel="stylesheet" type="text/css" href="style/style.css"/>
     <script src="js/lib/autobahn.min.js"></script>
@@ -17,122 +17,131 @@
 </head>
 
 <body>
+
 	<header>
 	<h2>Local Network Media</h2>
 	</header>
-<dlna>	
-	<table border=0 id="mainView" style="width:100%;min-height:480px" >
-		<tr style="height:6%">
-			<td align=center style="width:40%">
+	<div id="log" style="width:100%;height:100px;display:none">log</div>
+	<table id="mainView" style="width:100%;min-height:480px">
+		<tr style="height:10%">
+			<td align=center style="width:20%">
 			<header>
-				<h2><input  class="button button-dark-blue buttonDlna" type="button" value="Servers" onclick="resetMediaSources()" style="min-width:40%"/></h2><hr>
+				<h2><input class="button button-dark-blue buttonDlna"  type="button" value="Servers" onclick="resetMediaSources()" style="min-width:50%"/></h2>
 			</header>
 			</td>
-			<td align=center style="width:60%">
+			<td align=center style="width:30%">
 			<header>
-				<h2><input  class="button button-dark-blue buttonDlna" type="button" value="Renderers" onclick="resetMediaRenderers()" style="min-width:40%"/></h2><hr>
+				<h2><input class="button button-dark-blue buttonDlna"  type="button" value="Renderers" onclick="resetMediaRenderers()" style="min-width:50%"/></h2>
 			</header>
 			</td>
-
 		</tr>
-		<tr style="height:80%;min-height:440px">
+		<tr style="height:90%;min-height:440px">
 			<td style="width:50%" colspan=2>
-				<table style="width:100%;height:100%;min-height:400px;table-layout:fixed">
+				<table style="width:100%;height:100%;min-height:400px">
 					<tr class="listboxRow">
 						<td style="width:40%">
-						<select  id="mediaSourcesListBox" size=3 style="width:100%; height:60px"
+						<select id="mediaSourcesListBox" size=3 style="width:100%;height:80px"
 							onchange="logMediaSourceInfo(this.options[this.selectedIndex].mediaSource)" >
 						</select> 
 						</td>
 						<td style="width:60%">
-						<select  id="mediaRenderersListBox" size=3 style="width:100%; height:60px"
+						<select id="mediaRenderersListBox" size=3 style="width:100%;height:80px"
 							onchange="mediaRenderersListBoxChanged()" >
 						</select> 
 						</td>
 					</tr>
 					<tr class="listboxRow">
-						<td id="mediaSourceInfo" class="content" style="min-width:40%; max-width:40%; width:40%">
+						<td id="mediaSourceInfo" class="content" style="width:40%">
 						</td>
 						<td style="width:60%">
-						<input  class="button button-dark-blue buttonDlna" id="playButton" type="button" value="Play" disabled="disabled"
+						<input id="playButton" type="button" value="Play" disabled="disabled" class="button button-dark-blue buttonDlna"
 							style="width:18%"
 							onclick="remoteRenderer.controller.play()"/>
-						<input  class="button button-dark-blue buttonDlna" id="pauseButton" type="button" value="Pause" disabled="disabled"
+						<input id="pauseButton" type="button" value="Pause" disabled="disabled" class="button button-dark-blue buttonDlna"
 							style="width:18%"
 							onclick="remoteRenderer.controller.pause()"/>
-						<input  class="button button-dark-blue buttonDlna" id="stopButton" type="button" value="Stop" disabled="disabled"
+						<input id="stopButton" type="button" value="Stop" disabled="disabled" class="button button-dark-blue buttonDlna"
 							style="width:18%"
-							onclick="remoteRenderer.controller.stop()"/>
-						<input  class="button button-dark-blue buttonDlna" id="seekButton" type="button" value="Seek" disabled="disabled"
-							style="width:18%"
+							onclick="stopRendButton()"/>
+						<input id="seekButton" type="button" value="Seek" disabled="disabled" class="button button-dark-blue buttonDlna"
+							style="width:20%"
 							onclick="remoteRenderer.controller.seek(seekField.value)"/>
-						<input id="seekField" style="padding:2px;width:40px;" type="text" value="0" disabled="disabled"
-							style=""/>
-						<input  class="button button-dark-blue buttonDlna" id="nextButton" type="button" value="Next" disabled="disabled"
+						<input id="seekField" type="text" value="0" disabled="disabled"
+							style="width:10%"/>
+						<input id="speedButton" type="button" value="speed X" disabled="disabled"
+							style="width:20%;display:none"
+							onclick="remoteRenderer.controller.setSpeed(speedField.value)"/>
+						<input id="speedField" type="text" value="1" disabled="disabled"
+							style="width:10%;display:none"/>
+						<select id="speedList" disabled="disabled"
+						  style="width:60%;display:none"
+						  onchange="speedField.value=this.options[this.selectedIndex].value">
+						  <option value="1" selected="selected" style="display:none">1 X</option>
+						</select>
+						<hr>
+						<input id="nextButton" type="button" value="Next" disabled="disabled" class="button button-dark-blue buttonDlna"
 							style="width:18%"
 							onclick="nextTrack()"/>
-						<input  class="button button-dark-blue buttonDlna" id="previousButton" type="button" value="Previous" disabled="disabled"
+						<input id="previousButton" type="button" value="Previous" disabled="disabled" class="button button-dark-blue buttonDlna"
 							style="width:18%"
 							onclick="previousTrack()"/>
-						<input  class="button button-dark-blue buttonDlna" id="trackButton" type="button" value="Track" disabled="disabled"
+						<input id="trackButton" type="button" value="Track" disabled="disabled" class="button button-dark-blue buttonDlna"
 							style="width:18%"
 							onclick="remoteRenderer.controller.gotoTrack(trackField.value)"/>
-						<input id="trackField" style="padding:2px;width:40px;" type="text" value="1" disabled="disabled"
-							style="width:10%"/>&nbsp&nbsp&nbsp
-						Prefetch : 
-						<input id="prefetchCheckBox" type="checkbox" disabled="disabled"
-							style=""/>
-						<hr>
-						<input  class="button button-dark-blue buttonDlna" id="volButton" type="button" value="Volume" disabled="disabled"
+						<input id="trackField" type="text" value="" disabled="disabled"
+							style="width:10%"/>
+						Prefetch: <input id="prefetchCheckBox" type="checkbox" disabled="disabled"
+							style=""/></br>
+						
+						<input id="volButton" type="button" value="Volume" disabled="disabled" class="button button-dark-blue buttonDlna"
 							style="width:18%"
 							onclick="remoteRenderer.controller.setVolume(volField.value)"/>
 						<input id="volField" type="range" min="0" max="1" step="0.1" onchange="remoteRenderer.controller.setVolume(volField.value)" value="1" disabled="disabled"
 							style="width:50%"/>&nbsp&nbsp&nbsp
-						Mute : 
-						<input id="muteCheckBox" type="checkbox" disabled="disabled"
+						Mute: <input id="muteCheckBox" type="checkbox" disabled="disabled"
 							style=""
 							onchange="muteCheckBoxChanged()"/>
+						
 						<hr>
 						<input id="localRenderingCheckBox" type="checkbox" checked="checked"
 							style=""
 							onchange="localRenderingCheckBoxChanged()"/>
-						Local rendering <div align=center id="mediaContent" class="content"
-							colspan=2 style="width:100%;min-height:38px;">
-						</div>
+						Local rendering	<div id="mediaContent" class="content"
+											style="width:100%;min-height:40px;" colspan=2>
+										</div>
 						<hr>
-						<!--
-						<input  class="button button-dark-blue buttonDlna" style="width:100%" id="deleteButton" type="button" value="Remove content" onclick="removeCurrentContent()">
-						<input class="button button-dark-blue buttonDlna" style="width:30%" id="createFolderButton" type="button" value="Create folder:" onclick="createFolder(folderTitle.value)">
-						<input style="width:30%" id="folderTitle" type="text">
-						<select id="createUnder" onchange="updateContainerCapacities()">
-							<option value="Server" selected="selected">on server</option>
-							<option value="Folder">in folder</option>
+						<input style="width:100%;display:none" id="deleteButton" type="button" value="Remove content" onclick="removeCurrentContent()">
+						<input style="width:30%;display:none" id="createFolderButton" type="button" value="Create folder:" onclick="createFolder(folderTitle.value)">
+						<input style="width:30%;display:none" id="folderTitle" type="text">
+						<!-- input style="width:10%" id="createUnderAny" type="checkbox" onchange="updateContainerCapacities()"/>Anywhere -->
+						<select style="display:none" id="createUnder" onchange="updateContainerCapacities()">
+							<option style="display:none" value="Server" selected="selected">on server</option>
+							<option style="display:none" value="Folder">in folder</option>
 						</select>
-						<input class="button button-dark-blue buttonDlna" style="width:30%" id="renameButton" type="button" value="Rename item" onclick="renameItem(itemTitle.value)">
-						<input style="width:60%" id="itemTitle" type="text">
-						-->
+						<input style="width:30%;display:none" id="renameButton" type="button" value="Rename item" onclick="renameItem(itemTitle.value)">
+						<input style="width:60%;display:none" id="itemTitle" type="text">
 						</td>
 					</tr>
 					<tr class="singleRow">
-						<td class="content" style="width:100%" colspan=2>
-						<div id="folderPath" style="min-height:32px" class="buttonDlna"></div>
+						<td valign=center class="content" style="width:100%" colspan=2>
+						<div valign=center id="folderPath" style="height:32px"></div>
 						</td>
 					</tr>
-					<tr style="max-height:2px; display:none">
-						<td id="uploadBox" style="width:100%;max-height:2px;display:none;" colspan=2>
+					<tr class="singleRow">
+						<td id="uploadBox" style="width:100%;display:none" colspan=2>
 						<hr>
-						<input id="uploadFile" style="width:35%;display:none;height:2px" type="hidden"><!--text-->
-						<input class="button button-dark-blue buttonDlna" id="uploadButton" style="width:20;display:none;height:2px%" type="hidden" value="Upload as:" onclick="uploadLocalContent()"><!--button-->
-						<input id="uploadTitle" style="width:20%;display:none;height:2px" type="hidden"><!--text-->
-						<select id="uploadTo" style="visibility:hidden;display:none; height:2px; width:20%" onchange="updateContainerCapacities()">
+						<input id="uploadFile" style="width:35%;display:none" type="text">
+						<input id="uploadButton" style="width:20%;display:none" type="button" value="Upload as:" onclick="uploadLocalContent()">
+						<input id="uploadTitle" style="width:20%;display:none" type="text">
+						<select id="uploadTo" style="width:20%;display:none" onchange="updateContainerCapacities()">
 							<option value="Server" selected="selected">to server</option>
 							<option value="Folder">to folder</option>
 						</select>
 						</td>
 					</tr>
-					<tr class="singleRow">
-						<td style="width:100%" colspan=2>
-						<input  class="button button-dark-blue buttonDlna" id="searchButton" style="width:15%" type="button" value="Search" onclick="findInMediaSourceContainer(this.source, this.container, searchField.value)">
+					<tr class="singleRow" style="height:40px">
+						<td style="width:100%;height:40px" colspan=2>
+						<input id="searchButton" style="width:15%" type="button" value="Search" onclick="findInMediaSourceContainer(this.source, this.container, searchField.value)" class="button button-dark-blue buttonDlna">
 						<input id="searchField" style="width:25%" type="text" value="">
 							Sort by:
 							<select id="sortByPopList" style="width:20%" onchange="setSortMode()" >
@@ -148,18 +157,16 @@
 								<option value="ASC" selected="selected">ascending</option>
 								<option value="DESC">descending</option>
 							</select>
-						</td>	
+						</td>
 					</tr>
-					<tr class="contentRow" align=center>
+					<tr class="contentRow">
 						<td valign=top align=center id="folderInfo" style="width=50% !important;height:300px" colspan=2>
 						</td>
 					</tr>
-
 				</table>
-			</td>
+			</td>			
 		</tr>
 	</table>
-
-</dlna>	
+	
 </body>
 </html>
