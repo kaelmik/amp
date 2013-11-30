@@ -26,7 +26,7 @@
 	var currentList = [];
 	var listplayStatus = "";
 	var listCount = 0;
-	var stopsur = "";
+	var stopList = "";
 	var trackNumber;
 	//
 	// Browser-supported media types 
@@ -235,7 +235,7 @@
 			// set the renderer's controller onstatuschanged method
 			remoteRenderer.controller.onstatuschanged = function() {
 				listplayStatus = this.playbackStatus;
-				if((this.playbackStatus=="stopped")&&(stopsur=="play")&&(prefetchCheckBox.checked)){
+				if((this.playbackStatus=="stopped")&&(stopList=="play")&&(prefetchCheckBox.checked)){
 					playlistManage();
 				}
 				log.innerHTML=this.playbackStatus;
@@ -298,12 +298,14 @@
 	}
 	
 	function previousTrack() {
-		remoteRenderer.controller.previous();
-		trackField.value = remoteRenderer.controller.track;
+		//remoteRenderer.controller.previous();
+		//trackField.value = remoteRenderer.controller.track;
+		listCount -= 2;
+		remoteRenderer.controller.stop();
 	}
 	
 	function stopRendButton(){
-		stopsur="";
+		stopList="";
 		remoteRenderer.controller.stop();
 	}
 
@@ -409,9 +411,9 @@
 				}
 		currentList[listCount].getMetaData().then(rendererOpen,function(){rendererOpen(null);});
 		listCount++;
-		stopsur="";
+		stopList="";
 		trackField.value=listCount;
-		setTimeout(function(){stopsur = "play"},3000);	
+		setTimeout(function(){stopList = "play"},3000);	
 		return;
 	}
 	
@@ -424,19 +426,17 @@
 		this.className = "content selectedContent listContent";
 		selectedItem = this;
 		listCount = this.trackNumber;
-		trackField.value=listCount;
+		trackField.value=listCount+1;
 		if (remoteRenderer) {
 			var renderer = remoteRenderer;
 			var mediaItem = this.mediaItem;
 			var rendererOpen = function(metaData) {
 				if (prefetchCheckBox.checked) {
-					//prefetchCheckBox.checked = false;
-					//renderer.prefetchURI(mediaItem.content.uri, metaData).catch(debugLog);
-					//for (count; count<currentList.length; count++) {
-						//renderer.openURI(currentList[count].content.uri,metaData).catch(debugLog);	
-						//while (remoteRenderer.playbackStatus == "Playing"){
-						setTimeout(function(){stopsur = "play"},3000);
+						setTimeout(function(){stopList = "play"},2000);
 						}	
+				else {
+					setTimeout(function(){stopList = ""},2000);
+					}
 					renderer.openURI(mediaItem.content.uri, metaData).catch(debugLog);
 				}
 			

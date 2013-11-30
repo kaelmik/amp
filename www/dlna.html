@@ -67,7 +67,7 @@
 							style="width:20%"
 							onclick="remoteRenderer.controller.seek(seekField.value)"/>
 						<input id="seekField" type="text" value="0" disabled="disabled"
-							style="width:10%"/>
+							style="width:40px; padding:0px;text-align:center"/>
 						<input id="speedButton" type="button" value="speed X" disabled="disabled"
 							style="width:20%;display:none"
 							onclick="remoteRenderer.controller.setSpeed(speedField.value)"/>
@@ -89,15 +89,15 @@
 							style="width:18%"
 							onclick="remoteRenderer.controller.gotoTrack(trackField.value)"/>
 						<input id="trackField" type="text" value="" disabled="disabled"
-							style="width:10%"/>
-						Prefetch: <input id="prefetchCheckBox" type="checkbox" disabled="disabled"
+							style="width:40px;padding:0px;text-align:center"/>
+						Play all: <input id="prefetchCheckBox" type="checkbox" disabled="disabled"
 							style=""/></br>
 						
 						<input id="volButton" type="button" value="Volume" disabled="disabled" class="button button-dark-blue buttonDlna"
 							style="width:18%"
 							onclick="remoteRenderer.controller.setVolume(volField.value)"/>
 						<input id="volField" type="range" min="0" max="1" step="0.1" onchange="remoteRenderer.controller.setVolume(volField.value)" value="1" disabled="disabled"
-							style="width:50%"/>&nbsp&nbsp&nbsp
+							style="width:50%;vertical-align:middle"/>&nbsp&nbsp&nbsp
 						Mute: <input id="muteCheckBox" type="checkbox" disabled="disabled"
 							style=""
 							onchange="muteCheckBoxChanged()"/>
