@@ -106,6 +106,7 @@ while(1):
 		config.power_state = 0
 		status("0")
 		set_command("LedOff")
+		set_volume(0)
 		config.selector_cache = selector.readbyte()
 		mute_hp()
 		power.writebyte(0x1C)
