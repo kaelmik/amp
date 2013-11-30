@@ -22,7 +22,7 @@
 	<h2>Local Network Media</h2>
 	</header>
 	<div id="log" style="width:100%;height:100px;display:none">log</div>
-	<table id="mainView" style="width:100%;min-height:480px">
+	<table id="mainView" style="width:100%;min-height:480px;">
 		<tr style="height:10%">
 			<td align=center style="width:20%">
 			<header>
@@ -55,19 +55,19 @@
 						</td>
 						<td style="width:60%">
 						<input id="playButton" type="button" value="Play" disabled="disabled" class="button button-dark-blue buttonDlna"
-							style="width:18%"
+							style="width:18%;vertical-align:middle"
 							onclick="remoteRenderer.controller.play()"/>
 						<input id="pauseButton" type="button" value="Pause" disabled="disabled" class="button button-dark-blue buttonDlna"
-							style="width:18%"
+							style="width:18%;vertical-align:middle"
 							onclick="remoteRenderer.controller.pause()"/>
 						<input id="stopButton" type="button" value="Stop" disabled="disabled" class="button button-dark-blue buttonDlna"
-							style="width:18%"
+							style="width:18%;vertical-align:middle"
 							onclick="stopRendButton()"/>
 						<input id="seekButton" type="button" value="Seek" disabled="disabled" class="button button-dark-blue buttonDlna"
-							style="width:20%"
+							style="width:20%;vertical-align:middle"
 							onclick="remoteRenderer.controller.seek(seekField.value)"/>
 						<input id="seekField" type="text" value="0" disabled="disabled"
-							style="width:40px; padding:0px;text-align:center"/>
+							style="width:40px; padding:0px;text-align:center;vertical-align:middle"/>
 						<input id="speedButton" type="button" value="speed X" disabled="disabled"
 							style="width:20%;display:none"
 							onclick="remoteRenderer.controller.setSpeed(speedField.value)"/>
@@ -80,18 +80,18 @@
 						</select>
 						<hr>
 						<input id="nextButton" type="button" value="Next" disabled="disabled" class="button button-dark-blue buttonDlna"
-							style="width:18%"
+							style="width:18%;vertical-align:middle"
 							onclick="nextTrack()"/>
 						<input id="previousButton" type="button" value="Previous" disabled="disabled" class="button button-dark-blue buttonDlna"
-							style="width:18%"
+							style="width:18%;vertical-align:middle"
 							onclick="previousTrack()"/>
 						<input id="trackButton" type="button" value="Track" disabled="disabled" class="button button-dark-blue buttonDlna"
-							style="width:18%"
+							style="width:18%;vertical-align:middle"
 							onclick="remoteRenderer.controller.gotoTrack(trackField.value)"/>
 						<input id="trackField" type="text" value="" disabled="disabled"
-							style="width:40px;padding:0px;text-align:center"/>
+							style="width:40px;padding:0px;text-align:center;vertical-align:middle"/>
 						Play all: <input id="prefetchCheckBox" type="checkbox" disabled="disabled"
-							style=""/></br>
+							style="vertical-align:middle"/></br>
 						
 						<input id="volButton" type="button" value="Volume" disabled="disabled" class="button button-dark-blue buttonDlna"
 							style="width:18%"
