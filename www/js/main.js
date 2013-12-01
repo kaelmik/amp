@@ -25,7 +25,7 @@
 	//Continus playback implementation
 	var currentList = [];
 	var listplayStatus = "";
-	var listCount = 0;
+	var listCount = 1;
 	var stopList = "";
 	var trackNumber;
 	//
@@ -409,11 +409,11 @@
 		var rendererOpen = function(metaData) {
 						renderer.openURI(currentList[listCount-1].content.uri,metaData).catch(debugLog);	
 				}
+		listCount++;		
 		currentList[listCount].getMetaData().then(rendererOpen,function(){rendererOpen(null);});
-		listCount++;
 		stopList="";
 		trackField.value=listCount;
-		setTimeout(function(){stopList = "play"},3000);	
+		setTimeout(function(){stopList = "play"},3500);	
 		return;
 	}
 	
@@ -432,10 +432,10 @@
 			var mediaItem = this.mediaItem;
 			var rendererOpen = function(metaData) {
 				if (prefetchCheckBox.checked) {
-						setTimeout(function(){stopList = "play"},2000);
+						setTimeout(function(){stopList = "play"},3500);
 						}	
 				else {
-					setTimeout(function(){stopList = ""},2000);
+					setTimeout(function(){stopList = ""},3500);
 					}
 					renderer.openURI(mediaItem.content.uri, metaData).catch(debugLog);
 				}
