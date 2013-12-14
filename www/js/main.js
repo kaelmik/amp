@@ -405,11 +405,11 @@
 	}
 	
 	function playlistManage(){
+		listCount++;	
 		var renderer = remoteRenderer;
 		var rendererOpen = function(metaData) {
 						renderer.openURI(currentList[listCount-1].content.uri,metaData).catch(debugLog);	
 				}
-		listCount++;		
 		currentList[listCount].getMetaData().then(rendererOpen,function(){rendererOpen(null);});
 		stopList="";
 		trackField.value=listCount;

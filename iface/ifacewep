@@ -12,7 +12,8 @@ iface lo inet loopback
 #  netmask 
 #  gateway 
 
-auto eth0
+#auto eth0
+allow-hotplug eth0
 iface eth0 inet dhcp
 
 
