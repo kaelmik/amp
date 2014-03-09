@@ -29,6 +29,7 @@ case "$1" in
 
    stop)
 	echo "Stopping amplifier..."
+	i2cset -y 0 0x39 0x01 0x00
 	kill $PYTHONPID
         ;;
     *)

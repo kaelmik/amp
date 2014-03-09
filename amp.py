@@ -176,7 +176,7 @@ def gpio_init():
 def lcd_init():
 	"""Initialize LCD at system boot"""
 	lcd_power.on() #Release lcd reset pin
-	time.sleep(5) #Wait for screen to boot up
+	time.sleep(8) #Wait for screen to boot up
 	ser.write(lcd_button_set["Analog_1"])#set analog 1 input button
 	time.sleep(0.5)
 	if ser.read(1) == lcd_ack: #read ACK from screen
