@@ -122,6 +122,7 @@ def set_audio_input(input):
 		i2c_write(CS8416, 0x04, 0x80)
 		i2c_write(CS8416, 0x05, 0x80)
 	elif input == SEL_TOSLINK:
+		i2c_write(WM8742, 0x0A, 0x07
 		i2c_write(CS8416, 0x04, 0x89)
 		i2c_write(CS8416, 0x05, 0x80)
 	else:
