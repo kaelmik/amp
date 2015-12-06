@@ -91,8 +91,8 @@ while(1):
 	serial_read()
 	time.sleep(0.5)
 	
-	#Set current time every ~15 seconds
-	if t == 15 : 
+	#Set current time every ~30 seconds
+	if t == 30 : 
 		set_time()
 		t = 0
 		
