@@ -297,6 +297,7 @@ class vol(tornado.web.RequestHandler):
 		pga2320.open(1,0)
 		pga2320.writebytes([volum, volum])
 		pga2320.close()
+		wsSend(u"refresh")
 
 class input(tornado.web.RequestHandler):
 	def post(self):

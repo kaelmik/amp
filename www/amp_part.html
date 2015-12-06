@@ -24,7 +24,7 @@
 </form> 
 
 <form action="/vol" method="POST" target="hidden_frame">
-	 Volume control :</br></br>
+	 Volume control {{ 31.5-(0.5*(255-volume-40)) }} dB :</br></br>
 	 <input type="range" type="range" style="width: 200px; " name="volum" min="0" max="200" value={{volume}} onclick="submit();" onchange="submit();" step="2"/>
 </form>
 
